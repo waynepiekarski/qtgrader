@@ -12,13 +12,23 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->setupUi(this);
 
   /* Set up page change buttons */
-  connect(ui->leftPage,   SIGNAL(clicked()), this, SLOT(handleLeftPage()));
-  connect(ui->rightPage,  SIGNAL(clicked()), this, SLOT(handleRightPage()));
+  connect(ui->pageLeft ,   SIGNAL(clicked()), this, SLOT(handlePagePrev()));
+  connect(ui->pageRight,   SIGNAL(clicked()), this, SLOT(handlePageNext()));
+  connect(ui->studentPrev, SIGNAL(clicked()), this, SLOT(handleStudentPrev()));
+  connect(ui->studentNext, SIGNAL(clicked()), this, SLOT(handleStudentNext()));
   connect(ui->zoomIn,     SIGNAL(clicked()), this, SLOT(handleZoomIn()));
   connect(ui->zoomOut,    SIGNAL(clicked()), this, SLOT(handleZoomOut()));
   connect(ui->zoomWidth,  SIGNAL(clicked()), this, SLOT(handleZoomWidth()));
   connect(ui->zoomHeight, SIGNAL(clicked()), this, SLOT(handleZoomHeight()));
   connect(ui->zoomOne,    SIGNAL(clicked()), this, SLOT(handleZoomOne()));
+
+  /* Set up various actions */
+  connect(ui->actionQuit,     SIGNAL(triggered()), this, SLOT(handleQuit()));
+  connect(ui->actionSave ,    SIGNAL(triggered()), this, SLOT(handleSave()));
+  connect(ui->actionPagePrev, SIGNAL(triggered()), this, SLOT(handlePagePrev()));
+  connect(ui->actionPageNext, SIGNAL(triggered()), this, SLOT(handlePageNext()));
+  connect(ui->actionStudentPrev, SIGNAL(triggered()), this, SLOT(handleStudentPrev()));
+  connect(ui->actionStudentNext, SIGNAL(triggered()), this, SLOT(handleStudentNext()));
 
   /* Load in all the images */
   fprintf (stderr, "Hello world\n");
@@ -36,27 +46,73 @@ MainWindow::MainWindow(QWidget *parent) :
   Q_ASSERT(images.size() > 0);
   ui->image->setScaledContents(true);
   ui->image->setPixmap(QPixmap::fromImage(images[0]));
-  ui->image->resize(zoomFactor * ui->image->pixmap()->size());
-  ui->image->adjustSize();
+
+  adjustPage(curPage);
 }
 
-void MainWindow::handleLeftPage()
+void MainWindow::handlePagePrev()
 {
+#define NO_WRAPPING
+#ifdef NO_WRAPPING
   if (curPage > 0)
     curPage--;
-  fprintf (stderr, "Left page selected %zu\n", curPage);
-  ui->image->setPixmap(QPixmap::fromImage(images[curPage]));
-  ui->image->adjustSize();
+#else
+  if (curPage == 0)
+    curPage = images.size()-1;
+  else
+    curPage--;
+#endif // NO_WRAPPING
+  adjustPage(curPage);
 }
 
-void MainWindow::handleRightPage()
+void MainWindow::handlePageNext()
 {
+#ifdef NO_WRAPPING
   if (curPage < (images.size()-1))
     curPage++;
+#else
+  if (curPage == (images.size()-1))
+    curPage = 0;
+  else
+    curPage++;
+#endif // NO_WRAPPING
   Q_ASSERT(curPage < images.size());
-  fprintf (stderr, "Right page selected %zu\n", curPage);
-  ui->image->setPixmap(QPixmap::fromImage(images[curPage]));
-  ui->image->adjustSize();
+  adjustPage(curPage);
+}
+
+void MainWindow::handleStudentNext()
+{
+  if ((curPage + numPagesPerTest) < images.size())
+    curPage += numPagesPerTest;
+  adjustPage(curPage);
+}
+
+void MainWindow::handleStudentPrev()
+{
+  if (curPage >= numPagesPerTest)
+    curPage -= numPagesPerTest;
+  adjustPage(curPage);
+}
+
+void MainWindow::adjustPage(size_t page)
+{
+  Q_ASSERT(page < images.size());
+  curPage = page;
+  ui->image->setPixmap(QPixmap::fromImage(images[page]));
+  adjustZoom(1.0);
+
+  ui->pageStats->setText(QString("Page %1 of %2 (Scan %3 of %4)").arg(curPage%numPagesPerTest+1).arg(numPagesPerTest).arg(curPage+1).arg(images.size()));
+  ui->studentStats->setText(QString("Student %1 of %2").arg(curPage/numPagesPerTest+1).arg(images.size()/numPagesPerTest));
+}
+
+void MainWindow::handleQuit()
+{
+  exit(0);
+}
+
+void MainWindow::handleSave()
+{
+  fprintf (stderr, "Save ignored\n");
 }
 
 void MainWindow::adjustScrollBars(QScrollBar *scroll, float factor)
@@ -68,7 +124,6 @@ void MainWindow::adjustZoom(float factor)
 {
   float scrollFactor = factor / zoomFactor;
   zoomFactor = factor;
-  fprintf (stderr, "ScrollFactor = %f, ScaleFactor = %f\n", scrollFactor, factor);
   ui->image->resize(factor * ui->image->pixmap()->size());
   adjustScrollBars(ui->scrollArea->horizontalScrollBar(), scrollFactor);
   adjustScrollBars(ui->scrollArea->verticalScrollBar(), scrollFactor);

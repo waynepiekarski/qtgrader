@@ -102,7 +102,7 @@
              </size>
             </property>
             <property name="text">
-             <string>zoom%</string>
+             <string>###%</string>
             </property>
            </widget>
           </item>
@@ -145,7 +145,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QPushButton" name="leftPage">
+           <widget class="QPushButton" name="pageLeft">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -158,35 +158,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="curPage">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>50</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>curPage</string>
-            </property>
-            <property name="maxLength">
-             <number>10</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="of">
+           <widget class="QLabel" name="pageStats">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -194,37 +166,12 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>of</string>
+             <string>Scan # of # (Page # of #)</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="maxPage">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>50</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>maxPage</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="rightPage">
+           <widget class="QPushButton" name="pageRight">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -237,20 +184,44 @@
            </widget>
           </item>
           <item>
-           <spacer name="horizontalSpacer">
+           <widget class="Line" name="line">
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Vertical</enum>
             </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Preferred</enum>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="studentPrev">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
+            <property name="text">
+             <string>&lt;&lt;</string>
             </property>
-           </spacer>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="studentStats">
+            <property name="text">
+             <string>Student # of #</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="studentNext">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>&gt;&gt;</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -358,55 +329,51 @@
              <x>0</x>
              <y>0</y>
              <width>398</width>
-             <height>333</height>
+             <height>335</height>
             </rect>
            </property>
-           <widget class="QTableWidget" name="tableWidget">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>10</y>
-              <width>383</width>
-              <height>197</height>
-             </rect>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <row>
-             <property name="text">
-              <string>Q1</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>Q2</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>Q3</string>
-             </property>
-            </row>
-            <column>
-             <property name="text">
-              <string>Maximum</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Score</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Comments</string>
-             </property>
-            </column>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QTableWidget" name="tableWidget">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <row>
+               <property name="text">
+                <string>Q1</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>Q2</string>
+               </property>
+              </row>
+              <row>
+               <property name="text">
+                <string>Q3</string>
+               </property>
+              </row>
+              <column>
+               <property name="text">
+                <string>Maximum</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Score</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Comments</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </widget>
         </item>
@@ -441,8 +408,10 @@
     <property name="title">
      <string>Page</string>
     </property>
-    <addaction name="actionPrev_Page"/>
-    <addaction name="actionNext_Page"/>
+    <addaction name="actionPagePrev"/>
+    <addaction name="actionPageNext"/>
+    <addaction name="actionStudentPrev"/>
+    <addaction name="actionStudentNext"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuPage"/>
@@ -465,7 +434,7 @@
     <string>Meta+Q</string>
    </property>
   </action>
-  <action name="actionPrev_Page">
+  <action name="actionPagePrev">
    <property name="text">
     <string>Prev Page</string>
    </property>
@@ -473,12 +442,28 @@
     <string>Left</string>
    </property>
   </action>
-  <action name="actionNext_Page">
+  <action name="actionPageNext">
    <property name="text">
     <string>Next Page</string>
    </property>
    <property name="shortcut">
     <string>Right</string>
+   </property>
+  </action>
+  <action name="actionStudentPrev">
+   <property name="text">
+    <string>Prev Student</string>
+   </property>
+   <property name="shortcut">
+    <string>Up</string>
+   </property>
+  </action>
+  <action name="actionStudentNext">
+   <property name="text">
+    <string>Next Student</string>
+   </property>
+   <property name="shortcut">
+    <string>Down</string>
    </property>
   </action>
  </widget>
