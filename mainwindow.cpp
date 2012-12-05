@@ -59,34 +59,44 @@ void MainWindow::handleRightPage()
   ui->image->adjustSize();
 }
 
+void MainWindow::adjustScrollBars(QScrollBar *scroll, float factor)
+{
+  scroll->setValue(int(factor * scroll->value() + ((factor - 1) * scroll->pageStep()/2)));
+}
+
+void MainWindow::adjustZoom(float factor)
+{
+  float scrollFactor = factor / zoomFactor;
+  zoomFactor = factor;
+  fprintf (stderr, "ScrollFactor = %f, ScaleFactor = %f\n", scrollFactor, factor);
+  ui->image->resize(factor * ui->image->pixmap()->size());
+  adjustScrollBars(ui->scrollArea->horizontalScrollBar(), scrollFactor);
+  adjustScrollBars(ui->scrollArea->verticalScrollBar(), scrollFactor);
+}
+
 void MainWindow::handleZoomIn()
 {
-  zoomFactor *= 1.25;
-  ui->image->resize(zoomFactor * ui->image->pixmap()->size());
+  adjustZoom(zoomFactor * 1.25);
 }
 
 void MainWindow::handleZoomOut()
 {
-  zoomFactor /= 1.25;
-  ui->image->resize(zoomFactor * ui->image->pixmap()->size());
+  adjustZoom(zoomFactor / 1.25);
 }
 
 void MainWindow::handleZoomOne()
 {
-  zoomFactor = 1.0;
-  ui->image->resize(zoomFactor * ui->image->pixmap()->size());
+  adjustZoom(1.0);
 }
 
 void MainWindow::handleZoomWidth()
 {
-  zoomFactor = ui->scrollArea->size().width() / (float)ui->image->pixmap()->size().width();
-  ui->image->resize(zoomFactor * ui->image->pixmap()->size());
+  adjustZoom(ui->scrollArea->size().width() / (float)ui->image->pixmap()->size().width());
 }
 
 void MainWindow::handleZoomHeight()
 {
-  zoomFactor = ui->scrollArea->size().height() / (float)ui->image->pixmap()->size().height();
-  ui->image->resize(zoomFactor * ui->image->pixmap()->size());
+  adjustZoom(ui->scrollArea->size().height() / (float)ui->image->pixmap()->size().height());
 }
 
 

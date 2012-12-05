@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QScrollBar>
 #include <vector>
 
 namespace Ui {
@@ -26,6 +27,9 @@ public slots:
   void handleZoomOne();
 
 private:
+  void adjustScrollBars(QScrollBar *scroll, float factor);
+  void adjustZoom(float factor);
+
   Ui::MainWindow *ui;
   std::vector<QImage> images;
   size_t curPage;
