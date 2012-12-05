@@ -42,10 +42,9 @@ MainWindow::MainWindow(QWidget *parent) :
     fprintf (stderr, "Loading image %d from file [%s]\n", i, qPrintable(f.fileName()));
     QImage img (f.filePath());
     images.push_back(img);
+    pixes.push_back(QPixmap::fromImage(img));
   }
   Q_ASSERT(images.size() > 0);
-  ui->image->setScaledContents(true);
-  ui->image->setPixmap(QPixmap::fromImage(images[0]));
 
   adjustPage(curPage);
 }
@@ -98,7 +97,11 @@ void MainWindow::adjustPage(size_t page)
 {
   Q_ASSERT(page < images.size());
   curPage = page;
-  ui->image->setPixmap(QPixmap::fromImage(images[page]));
+  QPixmap &pix = pixes[page];
+  int width = zoomFactor * pix.size().width();
+  int height = zoomFactor * pix.size().height();
+  ui->image->setPixmap(pix.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+  ui->image->resize(width, height);
   ui->pageStats->setText(QString("Page %1 of %2 (Scan %3 of %4)").arg(curPage%numPagesPerTest+1).arg(numPagesPerTest).arg(curPage+1).arg(images.size()));
   ui->studentStats->setText(QString("Student %1 of %2").arg(curPage/numPagesPerTest+1).arg(images.size()/numPagesPerTest));
 }
@@ -113,27 +116,17 @@ void MainWindow::handleSave()
   fprintf (stderr, "Save ignored\n");
 }
 
-void MainWindow::adjustScrollBars(QScrollBar *scroll, float factor)
-{
-  scroll->setValue(int(factor * scroll->value() + ((factor - 1) * scroll->pageStep()/2)));
-}
-
 void MainWindow::adjustZoomRelative(float factor)
 {
-  float scrollFactor = factor;
   zoomFactor *= factor;
-  ui->image->resize(zoomFactor * ui->image->pixmap()->size());
-  adjustScrollBars(ui->scrollArea->horizontalScrollBar(), scrollFactor);
-  adjustScrollBars(ui->scrollArea->verticalScrollBar(), scrollFactor);
+  adjustPage(curPage);
   ui->zoomPercent->setText(QString("%1%").arg(int(zoomFactor * 100)));
 }
 
 void MainWindow::adjustZoomFixed(float factor)
 {
   zoomFactor = factor;
-  ui->image->resize(factor * ui->image->pixmap()->size());
-  ui->scrollArea->horizontalScrollBar()->setValue(0);
-  ui->scrollArea->verticalScrollBar()->setValue(0);
+  adjustPage(curPage);
   ui->zoomPercent->setText(QString("%1%").arg(int(zoomFactor * 100)));
 }
 
@@ -154,12 +147,12 @@ void MainWindow::handleZoomOne()
 
 void MainWindow::handleZoomWidth()
 {
-  adjustZoomFixed(ui->scrollArea->size().width() / (float)ui->image->pixmap()->size().width());
+  adjustZoomFixed(ui->scrollArea->size().width() / (float)pixes[curPage].size().width());
 }
 
 void MainWindow::handleZoomHeight()
 {
-  adjustZoomFixed(ui->scrollArea->size().height() / (float)ui->image->pixmap()->size().height());
+  adjustZoomFixed(ui->scrollArea->size().height() / (float)pixes[curPage].size().height());
 }
 
 

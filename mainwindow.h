@@ -31,13 +31,13 @@ public slots:
   void handleQuit();
 
 private:
-  void adjustScrollBars(QScrollBar *scroll, float factor);
   void adjustZoomRelative(float factor);
   void adjustZoomFixed(float factor);
   void adjustPage(size_t page);
 
   Ui::MainWindow *ui;
   std::vector<QImage> images;
+  std::vector<QPixmap> pixes;
   std::vector<QString> studentNames;
   size_t curPage;
   float zoomFactor;
