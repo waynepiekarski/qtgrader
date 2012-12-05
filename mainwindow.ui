@@ -41,19 +41,27 @@
          <height>472</height>
         </rect>
        </property>
-       <widget class="QLabel" name="image">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>0</y>
-          <width>81</width>
-          <height>512</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>ImageView</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLabel" name="image">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>ImageView</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
