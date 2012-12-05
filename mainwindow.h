@@ -32,7 +32,8 @@ public slots:
 
 private:
   void adjustScrollBars(QScrollBar *scroll, float factor);
-  void adjustZoom(float factor);
+  void adjustZoomRelative(float factor);
+  void adjustZoomFixed(float factor);
   void adjustPage(size_t page);
 
   Ui::MainWindow *ui;
