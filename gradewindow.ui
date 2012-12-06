@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GradeWindow</class>
+ <widget class="QMainWindow" name="GradeWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>774</width>
+         <height>531</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QTableWidget" name="tableWidget">
+          <row>
+           <property name="text">
+            <string>1</string>
+           </property>
+          </row>
+          <row>
+           <property name="text">
+            <string>2</string>
+           </property>
+          </row>
+          <column>
+           <property name="text">
+            <string>Student</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Q1</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Q2</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Q3</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Q4</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Q5</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Q6</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Q7</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Q8</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Q9</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Q10</string>
+           </property>
+          </column>
+          <item row="0" column="0">
+           <property name="text">
+            <string>Mila</string>
+           </property>
+          </item>
+          <item row="1" column="0">
+           <property name="text">
+            <string>Dylan</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <addaction name="actionGradeWindow"/>
+   </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionSave"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuWindow"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionGradeWindow">
+   <property name="text">
+    <string>Grade Window</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+G</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+S, Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+Q</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -403,6 +403,7 @@
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuPage">
     <property name="title">
@@ -413,8 +414,15 @@
     <addaction name="actionStudentPrev"/>
     <addaction name="actionStudentNext"/>
    </widget>
+   <widget class="QMenu" name="menuWindow">
+    <property name="title">
+     <string>Window</string>
+    </property>
+    <addaction name="actionGradeWindow"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuPage"/>
+   <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -464,6 +472,22 @@
    </property>
    <property name="shortcut">
     <string>Down</string>
+   </property>
+  </action>
+  <action name="actionGradeWindow">
+   <property name="text">
+    <string>Grade Window</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+G</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+H</string>
    </property>
   </action>
  </widget>

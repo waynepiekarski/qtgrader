@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ui_gradewindow.h"
 #include <QDir>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    gw(new GradeWindow),
     curPage(0),
     zoomFactor(1.0)
 {
@@ -25,10 +27,13 @@ MainWindow::MainWindow(QWidget *parent) :
   /* Set up various actions */
   connect(ui->actionQuit,     SIGNAL(triggered()), this, SLOT(handleQuit()));
   connect(ui->actionSave ,    SIGNAL(triggered()), this, SLOT(handleSave()));
+  connect(gw->getUI()->actionSave , SIGNAL(triggered()), this, SLOT(handleSave()));
   connect(ui->actionPagePrev, SIGNAL(triggered()), this, SLOT(handlePagePrev()));
   connect(ui->actionPageNext, SIGNAL(triggered()), this, SLOT(handlePageNext()));
   connect(ui->actionStudentPrev, SIGNAL(triggered()), this, SLOT(handleStudentPrev()));
   connect(ui->actionStudentNext, SIGNAL(triggered()), this, SLOT(handleStudentNext()));
+  connect(ui->actionGradeWindow, SIGNAL(triggered()), gw, SLOT(handleGradeWindow()));
+  connect(gw->getUI()->actionGradeWindow, SIGNAL(triggered()), gw, SLOT(handleGradeWindow()));
 
   /* Load in all the images */
   fprintf (stderr, "Hello world\n");

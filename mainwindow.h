@@ -5,6 +5,8 @@
 #include <QScrollBar>
 #include <vector>
 
+#include "gradewindow.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -36,6 +38,7 @@ private:
   void adjustPage(size_t page);
 
   Ui::MainWindow *ui;
+  GradeWindow *gw;
   std::vector<QImage> images;
   std::vector<QPixmap> pixes;
   std::vector<QString> studentNames;
