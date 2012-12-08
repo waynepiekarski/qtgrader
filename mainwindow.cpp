@@ -25,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->zoomOne,    SIGNAL(clicked()), this, SLOT(handleZoomOne()));
 
   /* Set up various actions */
-  connect(ui->actionQuit,     SIGNAL(triggered()), this, SLOT(handleQuit()));
   connect(ui->actionSave ,    SIGNAL(triggered()), this, SLOT(handleSave()));
   connect(gw->getUI()->actionSave , SIGNAL(triggered()), this, SLOT(handleSave()));
   connect(ui->actionPagePrev, SIGNAL(triggered()), this, SLOT(handlePagePrev()));
