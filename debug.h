@@ -3,9 +3,9 @@
 #ifdef NDEBUG
 #define GDEBUG(fmt, ...)
 #else
-#define GDEBUG(fmt, ...) fprintf (stderr, "DEBUG %s:%d - " fmt, __FILE__, __LINE__, ## __VA_ARGS__)
+#define GDEBUG(fmt, ...) fprintf (stderr, "DEBUG %s:%d - " fmt "\n", __FILE__, __LINE__, ## __VA_ARGS__)
 #endif
-#define GFATAL(fmt, ...) fprintf (stderr, "FATAL %s:%d - " fmt, __FILE__, __LINE__, ## __VA_ARGS__), exit(1)
+#define GFATAL(fmt, ...) fprintf (stderr, "FATAL %s:%d - " fmt "\n", __FILE__, __LINE__, ## __VA_ARGS__), exit(1)
 
 #ifdef NDEBUG
 #define GASSERT(cond, fmt, ...)
