@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "gradewindow.h"
+#include "pages.h"
 
 namespace Ui {
 class MainWindow;
@@ -39,8 +40,7 @@ private:
 
   Ui::MainWindow *ui;
   GradeWindow *gw;
-  std::vector<QImage> images;
-  std::vector<QPixmap> pixes;
+  Pages *pages;
   std::vector<QString> studentNames;
   size_t curPage;
   float zoomFactor;
