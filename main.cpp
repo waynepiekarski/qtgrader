@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
 
+  /* Query for what startup options we will use */
   StartupDialog sd;
 
   MainWindow w;

@@ -1,10 +1,15 @@
 #pragma once
 
+#include <QImage>
+#include <QPixmap>
 #include <QDir>
 #include "debug.h"
 
 class Pages {
-public:
+
+friend class Global;
+
+private:
   Pages(QString path)
   {
     /* Scan the directory for images */
@@ -20,9 +25,12 @@ public:
       images.push_back(NULL);
       pixes.push_back(NULL);
     }
+    if (list.size() == 0)
+      GEXITDIALOG(QString("No images found in scan directory [%1]").arg(qPrintable(path)));
     GASSERT(size() > 0, "Size %zu is invalid", size());
   }
 
+private:
   QString& getFilename(size_t elem)
   {
     GASSERT(elem < size(), "Requested elem %zu not less than %zu", elem, size());

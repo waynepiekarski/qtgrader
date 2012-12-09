@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "ui_gradewindow.h"
 #include "database.h"
+#include "global.h"
 #include <QDir>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -11,9 +12,6 @@ MainWindow::MainWindow(QWidget *parent) :
     curPage(0),
     zoomFactor(1.0)
 {
-  /* Set up the database */
-  db = new Database (3, 10);
-
   /* Set up the Qt user interface */
   ui->setupUi(this);
 
@@ -38,9 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->actionGradeWindow, SIGNAL(triggered()), gw, SLOT(handleGradeWindow()));
   connect(gw->getUI()->actionGradeWindow, SIGNAL(triggered()), gw, SLOT(handleGradeWindow()));
 
-  /* Set up the image cache */
-  pages = new Pages ("../../../../scans");
-
   /* Now set the first page */
   adjustPage(curPage);
 }
@@ -63,21 +58,21 @@ void MainWindow::handlePagePrev()
 void MainWindow::handlePageNext()
 {
 #ifdef NO_WRAPPING
-  if (curPage < (pages->size()-1))
+  if (curPage < (Global::getNumPages()-1))
     curPage++;
 #else
-  if (curPage == (pages->size()-1))
+  if (curPage == (Global::getNumPages()-1))
     curPage = 0;
   else
     curPage++;
 #endif // NO_WRAPPING
-  Q_ASSERT(curPage < pages->size());
+  Q_ASSERT(curPage < Global::getNumPages());
   adjustPage(curPage);
 }
 
 void MainWindow::handleStudentNext()
 {
-  if ((curPage + numPagesPerTest) < pages->size())
+  if ((curPage + numPagesPerTest) < Global::getNumPages())
     curPage += numPagesPerTest;
   adjustPage(curPage);
 }
@@ -91,20 +86,20 @@ void MainWindow::handleStudentPrev()
 
 void MainWindow::adjustPage(size_t page)
 {
-  Q_ASSERT(page < pages->size());
+  GASSERT(page < Global::getNumPages(), "Page %zu is larger than max page %zu", page, Global::getNumPages());
   curPage = page;
-  QPixmap &pix = pages->getQPixmap(page);
+  QPixmap &pix = Global::getQPixmap(page);
   int width = zoomFactor * pix.size().width();
   int height = zoomFactor * pix.size().height();
   ui->image->setPixmap(pix.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
   ui->image->resize(width, height);
-  ui->pageStats->setText(QString("Page %1 of %2 (Scan %3 of %4)").arg(curPage%numPagesPerTest+1).arg(numPagesPerTest).arg(curPage+1).arg(pages->size()));
-  ui->studentStats->setText(QString("Student %1 of %2").arg(curPage/numPagesPerTest+1).arg(pages->size()/numPagesPerTest));
+  ui->pageStats->setText(QString("Page %1 of %2 (Scan %3 of %4)").arg(curPage%numPagesPerTest+1).arg(numPagesPerTest).arg(curPage+1).arg(Global::getNumPages()));
+  ui->studentStats->setText(QString("Student %1 of %2").arg(curPage/numPagesPerTest+1).arg(Global::getNumPages()/numPagesPerTest));
 }
 
 void MainWindow::handleQuit()
 {
-  exit(0);
+  GEXIT(0);
 }
 
 void MainWindow::handleSave()
@@ -143,12 +138,12 @@ void MainWindow::handleZoomOne()
 
 void MainWindow::handleZoomWidth()
 {
-  adjustZoomFixed(ui->scrollArea->size().width() / (float)pages->getQPixmap(curPage).size().width());
+  adjustZoomFixed(ui->scrollArea->size().width() / (float)Global::getQPixmap(curPage).size().width());
 }
 
 void MainWindow::handleZoomHeight()
 {
-  adjustZoomFixed(ui->scrollArea->size().height() / (float)pages->getQPixmap(curPage).size().height());
+  adjustZoomFixed(ui->scrollArea->size().height() / (float)Global::getQPixmap(curPage).size().height());
 }
 
 

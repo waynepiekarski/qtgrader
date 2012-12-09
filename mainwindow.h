@@ -40,7 +40,6 @@ private:
 
   Ui::MainWindow *ui;
   GradeWindow *gw;
-  Pages *pages;
   std::vector<QString> studentNames;
   size_t curPage;
   float zoomFactor;

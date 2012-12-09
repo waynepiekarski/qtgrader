@@ -16,14 +16,17 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     gradewindow.cpp \
     database.cpp \
-    startup.cpp
+    startup.cpp \
+    debug.cpp \
+    global.cpp
 
 HEADERS  += mainwindow.h \
     gradewindow.h \
     database.h \
     pages.h \
     debug.h \
-    startup.h
+    startup.h \
+    global.h
 
 FORMS    += mainwindow.ui \
     gradewindow.ui \

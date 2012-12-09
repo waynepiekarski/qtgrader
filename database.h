@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "pages.h"
+
 class GradeArray
 {
 public:
@@ -66,7 +68,9 @@ private:
 
 class Database
 {
-public:
+  friend class Global;
+
+private:
   Database(size_t numStudents, size_t numQuestions) :
     _numQuestions(numQuestions),
     _maxGrades(numQuestions),
@@ -78,5 +82,3 @@ private:
   GradeArray _maxGrades;
   StudentArray _students;
 };
-
-extern Database *db;

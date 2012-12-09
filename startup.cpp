@@ -1,8 +1,10 @@
 #include <QFileDialog>
-#include <QMessageBox>
 
 #include "startup.h"
 #include "ui_startup.h"
+#include "global.h"
+#include "database.h"
+#include "pages.h"
 #include "debug.h"
 
 StartupDialog::StartupDialog(QWidget *parent) :
@@ -24,7 +26,7 @@ StartupDialog::StartupDialog(QWidget *parent) :
       break;
     case QDialog::Rejected:
       GDEBUG ("Abort selected during startup dialog, so exiting");
-      exit(0);
+      GEXIT(0);
       break;
     default:
       GFATAL ("Unknown exec() return value");
@@ -36,35 +38,34 @@ StartupDialog::StartupDialog(QWidget *parent) :
   {
     /* Handle the case where we load a project file */
     if (ui->existingProject->text().length() == 0)
-    {
-      QMessageBox error;
-      error.setText("Must specify either a project file or an image directory");
-      error.exec();
-      exit(0);
-    }
-    GDEBUG("Existing project selected [%s]", qPrintable(ui->existingProject->text()));
+      GEXITDIALOG("Must specify either a project file or an image directory");
+    GFATAL("Existing project selected [%s]", qPrintable(ui->existingProject->text()));
   }
   else
   {
     if (ui->existingProject->text().length() != 0)
-    {
-      QMessageBox error;
-      error.setText("Cannot specify project file and image directory at the same time");
-      error.exec();
-      exit(0);
-    }
+      GEXITDIALOG("Cannot specify project file and image directory at the same time");
 
     /* Image directory specified, so make sure the number of questions is set */
     bool ok;
     _questionsPerStudent = ui->questionsPerStudent->text().toInt(&ok);
     if ((!ok) || (_questionsPerStudent <= 0))
-    {
-      QMessageBox error;
-      error.setText("Must specify a valid integer for the questions per student");
-      error.exec();
-      exit(0);
-    }
+      GEXITDIALOG("Must specify a valid integer for the questions per student");
     GDEBUG("%d questions per student with image directory [%s]", _questionsPerStudent, qPrintable(ui->imageDirectory->text()));
+
+    /* Set up the image cache */
+    Global::initPages("../../../../scans");
+    // Global::initPages(ui->imageDirectory->text());
+
+    /* Set up the database */
+    int numStudents = Global::getNumPages() / _questionsPerStudent;
+    if (Global::getNumPages() % _questionsPerStudent != 0)
+    {
+      GDEBUG ("Number of pages %zu and number of students %d has remainder %ld",
+              Global::getNumPages(), _questionsPerStudent, Global::getNumPages() % _questionsPerStudent);
+      GEXITDIALOG("Number of scan pages does not match number of students, spare pages found");
+    }
+    Global::initDatabase(numStudents, _questionsPerStudent);
   }
 }
 
