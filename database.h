@@ -76,15 +76,13 @@ class Database
 
 private:
   Database(size_t numStudents, size_t numQuestions) :
-    _numQuestions(numQuestions),
     _maxGrades(numQuestions),
     _students(numStudents, numQuestions)
   { }
 
   size_t getNumQuestions()
   {
-    GASSERT(_numQuestions == _maxGrades.size(), "numQuestions is %zu but maxGrades is %zu", _numQuestions, _maxGrades.size());
-    return _numQuestions;
+    return _maxGrades.size();
   }
 
   size_t getNumStudents()
@@ -93,7 +91,6 @@ private:
   }
 
 private:
-  size_t _numQuestions;
   GradeArray _maxGrades;
   StudentArray _students;
 };

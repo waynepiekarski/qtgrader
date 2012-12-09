@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     gw(new GradeWindow),
     curPage(0),
+    curQuestion(0),
     zoomFactor(1.0)
 {
   /* Set up the Qt user interface */
@@ -20,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->pageRight,   SIGNAL(clicked()), this, SLOT(handlePageNext()));
   connect(ui->studentPrev, SIGNAL(clicked()), this, SLOT(handleStudentPrev()));
   connect(ui->studentNext, SIGNAL(clicked()), this, SLOT(handleStudentNext()));
+  connect(ui->questionPrev, SIGNAL(clicked()), this, SLOT(handleQuestionPrev()));
+  connect(ui->questionNext, SIGNAL(clicked()), this, SLOT(handleQuestionNext()));
   connect(ui->zoomIn,     SIGNAL(clicked()), this, SLOT(handleZoomIn()));
   connect(ui->zoomOut,    SIGNAL(clicked()), this, SLOT(handleZoomOut()));
   connect(ui->zoomWidth,  SIGNAL(clicked()), this, SLOT(handleZoomWidth()));
@@ -36,8 +39,9 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->actionGradeWindow, SIGNAL(triggered()), gw, SLOT(handleGradeWindow()));
   connect(gw->getUI()->actionGradeWindow, SIGNAL(triggered()), gw, SLOT(handleGradeWindow()));
 
-  /* Now set the first page */
-  adjustPage(curPage);
+  /* Now set the first page and first question */
+  adjustPage(0);
+  adjustQuestion(0);
 }
 
 void MainWindow::handlePagePrev()
@@ -82,6 +86,27 @@ void MainWindow::handleStudentPrev()
   if (curPage >= Global::getNumPagesPerStudent())
     curPage -= Global::getNumPagesPerStudent();
   adjustPage(curPage);
+}
+
+void MainWindow::handleQuestionPrev()
+{
+  if (curQuestion > 0)
+    curQuestion--;
+  adjustQuestion(curQuestion);
+}
+
+void MainWindow::handleQuestionNext()
+{
+  if (curQuestion < (Global::getNumQuestions()-1))
+    curQuestion++;
+  adjustQuestion(curQuestion);
+}
+
+void MainWindow::adjustQuestion(size_t question)
+{
+  GASSERT(question < Global::getNumQuestions(), "Question %zu is larger than max question %zu", question, Global::getNumQuestions());
+  curQuestion = question;
+  ui->questionStats->setText(QString("Question %1 of %2").arg(curQuestion+1).arg(Global::getNumQuestions()));
 }
 
 void MainWindow::adjustPage(size_t page)

@@ -246,7 +246,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_9">
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="questionPrev">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -272,7 +272,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="questionNext">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -323,23 +323,21 @@
              </size>
             </property>
             <property name="text">
-             <string>Internal Id</string>
+             <string>Student Id</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="idNumber">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+           <widget class="QLineEdit" name="studentId">
             <property name="text">
-             <string>idNumber</string>
+             <string>studentId</string>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="studentNum">
+            <property name="text">
+             <string>internalId</string>
             </property>
            </widget>
           </item>
@@ -466,7 +464,7 @@
              <x>0</x>
              <y>0</y>
              <width>398</width>
-             <height>210</height>
+             <height>204</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_8">

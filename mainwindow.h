@@ -25,6 +25,8 @@ public slots:
   void handlePageNext();
   void handleStudentPrev();
   void handleStudentNext();
+  void handleQuestionPrev();
+  void handleQuestionNext();
   void handleZoomIn();
   void handleZoomOut();
   void handleZoomWidth();
@@ -36,11 +38,13 @@ public slots:
 private:
   void adjustZoomRelative(float factor);
   void adjustZoomFixed(float factor);
+  void adjustQuestion(size_t question);
   void adjustPage(size_t page);
 
   Ui::MainWindow *ui;
   GradeWindow *gw;
   size_t curPage;
+  size_t curQuestion;
   float zoomFactor;
 };
 
