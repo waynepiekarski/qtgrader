@@ -15,13 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     gradewindow.cpp \
-    database.cpp
+    database.cpp \
+    startup.cpp
 
 HEADERS  += mainwindow.h \
     gradewindow.h \
     database.h \
     pages.h \
-    debug.h
+    debug.h \
+    startup.h
 
 FORMS    += mainwindow.ui \
-    gradewindow.ui
+    gradewindow.ui \
+    startup.ui

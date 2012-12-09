@@ -1,10 +1,14 @@
 #include "mainwindow.h"
 #include "gradewindow.h"
+#include "startup.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
+
+  StartupDialog sd;
+
   MainWindow w;
   w.showMaximized();
 
