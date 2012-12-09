@@ -40,11 +40,8 @@ private:
 
   Ui::MainWindow *ui;
   GradeWindow *gw;
-  std::vector<QString> studentNames;
   size_t curPage;
   float zoomFactor;
-
-  static const size_t numPagesPerTest = 4; // Fixed constant, need to read this from a file
 };
 
 #endif // MAINWINDOW_H

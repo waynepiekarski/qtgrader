@@ -14,6 +14,12 @@ StartupDialog::StartupDialog(QWidget *parent) :
   /* Set up the Qt user interface */
   ui->setupUi(this);
 
+  /* Hard code defaults for new project debugging */
+  ui->imageDirectory->setText("../../../../scans");
+  ui->existingProject->setText("");
+  ui->questionsPerStudent->setText("9");
+  ui->pagesPerStudent->setText("4");
+
   /* Set up page change buttons */
   connect(ui->selectImageDirectory, SIGNAL(clicked()), this, SLOT(handleSelectImageDirectory()));
   connect(ui->loadExistingProject, SIGNAL(clicked()), this, SLOT(handleLoadExistingProject()));
@@ -48,24 +54,30 @@ StartupDialog::StartupDialog(QWidget *parent) :
 
     /* Image directory specified, so make sure the number of questions is set */
     bool ok;
-    _questionsPerStudent = ui->questionsPerStudent->text().toInt(&ok);
+    int _questionsPerStudent = ui->questionsPerStudent->text().toInt(&ok);
     if ((!ok) || (_questionsPerStudent <= 0))
       GEXITDIALOG("Must specify a valid integer for the questions per student");
-    GDEBUG("%d questions per student with image directory [%s]", _questionsPerStudent, qPrintable(ui->imageDirectory->text()));
+
+    /* Also check the number of pages is valid */
+    int _pagesPerStudent = ui->pagesPerStudent->text().toInt(&ok);
+    if ((!ok) || (_pagesPerStudent <= 0))
+      GEXITDIALOG("Must specify a valid integer for the pages per student");
+
+    GDEBUG("%d questions and %d pages per student with image directory [%s]",
+           _questionsPerStudent, _pagesPerStudent, qPrintable(ui->imageDirectory->text()));
 
     /* Set up the image cache */
-    Global::initPages("../../../../scans");
-    // Global::initPages(ui->imageDirectory->text());
+    Global::initPages(ui->imageDirectory->text());
 
     /* Set up the database */
-    int numStudents = Global::getNumPages() / _questionsPerStudent;
-    if (Global::getNumPages() % _questionsPerStudent != 0)
+    int numStudents = Global::getNumPages() / _pagesPerStudent;
+    if (Global::getNumPages() % _pagesPerStudent != 0)
     {
-      GDEBUG ("Number of pages %zu and number of students %d has remainder %ld",
-              Global::getNumPages(), _questionsPerStudent, Global::getNumPages() % _questionsPerStudent);
-      GEXITDIALOG("Number of scan pages does not match number of students, spare pages found");
+      GDEBUG ("Number of pages %zu and pages per student %d has remainder %ld",
+              Global::getNumPages(), _pagesPerStudent, Global::getNumPages() % _pagesPerStudent);
+      GEXITDIALOG("Number of scan pages does not match number of pages per student, spare pages found");
     }
-    Global::initDatabase(numStudents, _questionsPerStudent);
+    Global::initDatabase(numStudents, _questionsPerStudent, _pagesPerStudent);
   }
 }
 

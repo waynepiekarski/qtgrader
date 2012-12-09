@@ -4,3 +4,4 @@
 
 Database* Global::_db = NULL;
 Pages* Global::_pages = NULL;
+size_t Global::_numPagesPerStudent = 0;

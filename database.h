@@ -28,6 +28,8 @@ public:
     return value;
   }
 
+  size_t size() { return _values.size(); }
+
 private:
   std::vector<int> _values;
 };
@@ -61,6 +63,8 @@ public:
     return _students[elem];
   }
 
+  size_t size() { return _students.size(); }
+
 private:
   std::vector<Student> _students;
 };
@@ -76,6 +80,17 @@ private:
     _maxGrades(numQuestions),
     _students(numStudents, numQuestions)
   { }
+
+  size_t getNumQuestions()
+  {
+    GASSERT(_numQuestions == _maxGrades.size(), "numQuestions is %zu but maxGrades is %zu", _numQuestions, _maxGrades.size());
+    return _numQuestions;
+  }
+
+  size_t getNumStudents()
+  {
+    return _students.size();
+  }
 
 private:
   size_t _numQuestions;

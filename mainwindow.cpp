@@ -72,15 +72,15 @@ void MainWindow::handlePageNext()
 
 void MainWindow::handleStudentNext()
 {
-  if ((curPage + numPagesPerTest) < Global::getNumPages())
-    curPage += numPagesPerTest;
+  if ((curPage + Global::getNumPagesPerStudent()) < Global::getNumPages())
+    curPage += Global::getNumPagesPerStudent();
   adjustPage(curPage);
 }
 
 void MainWindow::handleStudentPrev()
 {
-  if (curPage >= numPagesPerTest)
-    curPage -= numPagesPerTest;
+  if (curPage >= Global::getNumPagesPerStudent())
+    curPage -= Global::getNumPagesPerStudent();
   adjustPage(curPage);
 }
 
@@ -93,8 +93,8 @@ void MainWindow::adjustPage(size_t page)
   int height = zoomFactor * pix.size().height();
   ui->image->setPixmap(pix.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
   ui->image->resize(width, height);
-  ui->pageStats->setText(QString("Page %1 of %2 (Scan %3 of %4)").arg(curPage%numPagesPerTest+1).arg(numPagesPerTest).arg(curPage+1).arg(Global::getNumPages()));
-  ui->studentStats->setText(QString("Student %1 of %2").arg(curPage/numPagesPerTest+1).arg(Global::getNumPages()/numPagesPerTest));
+  ui->pageStats->setText(QString("Page %1 of %2 (Scan %3 of %4)").arg(curPage%Global::getNumPagesPerStudent()+1).arg(Global::getNumPagesPerStudent()).arg(curPage+1).arg(Global::getNumPages()));
+  ui->studentStats->setText(QString("Student %1 of %2").arg(curPage/Global::getNumPagesPerStudent()+1).arg(Global::getNumPages()/Global::getNumPagesPerStudent()));
 }
 
 void MainWindow::handleQuit()
