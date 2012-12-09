@@ -15,24 +15,29 @@ public:
     for (int i = 0; i < list.size(); i++)
     {
       QFileInfo f = list.at(i);
-      GDEBUG("Loading image %d from file [%s]", i, qPrintable(f.fileName()));
+      GDEBUG("Found image %d from file [%s]", i, qPrintable(f.fileName()));
       filenames.push_back(f.filePath());
-      QImage img (f.filePath());
-      images.push_back(img);
-      pixes.push_back(QPixmap::fromImage(img));
+      images.push_back(NULL);
+      pixes.push_back(NULL);
     }
     GASSERT(size() > 0, "Size %zu is invalid", size());
   }
 
-  QImage& getQImage(size_t elem)
+  QString& getFilename(size_t elem)
   {
     GASSERT(elem < size(), "Requested elem %zu not less than %zu", elem, size());
-    return images[elem];
+    return filenames[elem];
   }
 
   QPixmap& getQPixmap(size_t elem)
   {
     GASSERT(elem < size(), "Requested elem %zu not less than %zu", elem, size());
+    if (images[elem] == NULL)
+    {
+      GDEBUG("Caching image %zu from file [%s]", elem, qPrintable(getFilename(elem)));
+      images[elem] = new QImage (getFilename(elem));
+      pixes[elem] = QPixmap::fromImage (*images[elem]);
+    }
     return pixes[elem];
   }
 
@@ -46,6 +51,6 @@ public:
 
 private:
   std::vector<QString> filenames;
-  std::vector<QImage> images;
+  std::vector<QImage*> images;
   std::vector<QPixmap> pixes;
 };
