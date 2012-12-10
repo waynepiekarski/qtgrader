@@ -21,6 +21,7 @@ public:
     _pages = new Pages(path);
   }
 
+  static Database* db() { return getDatabase(); }
   static Database* getDatabase() { GASSERT(_db, "DB not initialized"); return _db; }
   static Pages* getPages() { GASSERT(_pages, "Pages not initialized"); return _pages; }
 

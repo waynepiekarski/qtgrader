@@ -15,7 +15,8 @@ public:
   explicit GradeWindow(QWidget *parent = 0);
   ~GradeWindow();
   Ui::GradeWindow* getUI() { return ui; }
-  
+  void update();
+
 public slots:
   void handleGradeWindow ();
 

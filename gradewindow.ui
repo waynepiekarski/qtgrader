@@ -32,81 +32,12 @@
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
          <widget class="QTableWidget" name="tableWidget">
-          <row>
-           <property name="text">
-            <string>1</string>
-           </property>
-          </row>
-          <row>
-           <property name="text">
-            <string>2</string>
-           </property>
-          </row>
-          <column>
-           <property name="text">
-            <string>Student</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Q1</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Q2</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Q3</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Q4</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Q5</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Q6</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Q7</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Q8</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Q9</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Q10</string>
-           </property>
-          </column>
-          <item row="0" column="0">
-           <property name="text">
-            <string>Mila</string>
-           </property>
-          </item>
-          <item row="1" column="0">
-           <property name="text">
-            <string>Dylan</string>
-           </property>
-          </item>
+          <property name="rowCount">
+           <number>0</number>
+          </property>
+          <property name="columnCount">
+           <number>0</number>
+          </property>
          </widget>
         </item>
        </layout>

@@ -107,6 +107,10 @@ void MainWindow::adjustQuestion(size_t question)
   GASSERT(question < Global::getNumQuestions(), "Question %zu is larger than max question %zu", question, Global::getNumQuestions());
   curQuestion = question;
   ui->questionStats->setText(QString("Question %1 of %2").arg(curQuestion+1).arg(Global::getNumQuestions()));
+  size_t curStudent = curPage/Global::getNumPagesPerStudent();
+  ui->questionFeedback->setText(Global::db()->getStudent(curStudent).getFeedback(curQuestion));
+  ui->questionMaximum->setText(QString("%1").arg(Global::db()->getQuestionMaximum(curQuestion)));
+  ui->questionScore->setText(QString("%1").arg(Global::db()->getStudent(curStudent).getGrade(curQuestion)));
 }
 
 void MainWindow::adjustPage(size_t page)
@@ -119,7 +123,11 @@ void MainWindow::adjustPage(size_t page)
   ui->image->setPixmap(pix.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
   ui->image->resize(width, height);
   ui->pageStats->setText(QString("Page %1 of %2 (Scan %3 of %4)").arg(curPage%Global::getNumPagesPerStudent()+1).arg(Global::getNumPagesPerStudent()).arg(curPage+1).arg(Global::getNumPages()));
-  ui->studentStats->setText(QString("Student %1 of %2").arg(curPage/Global::getNumPagesPerStudent()+1).arg(Global::getNumPages()/Global::getNumPagesPerStudent()));
+  size_t curStudent = curPage/Global::getNumPagesPerStudent();
+  ui->studentStats->setText(QString("Student %1 of %2").arg(curStudent+1).arg(Global::getNumStudents()));
+  ui->studentId->setText(Global::db()->getStudent(curStudent).getStudentId());
+  ui->studentName->setText(Global::db()->getStudent(curStudent).getStudentName());
+  adjustQuestion(curQuestion); // Refresh the question information in the UI
 }
 
 void MainWindow::handleQuit()

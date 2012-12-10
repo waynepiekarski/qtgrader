@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QtGlobal>
-#include <string>
 #include <vector>
 
 #include "pages.h"
@@ -10,7 +9,8 @@ class GradeArray
 {
 public:
   GradeArray(size_t size) :
-    _values(size, -1)
+    _values(size, -1),
+    _feedback(size)
   { }
 
   void set(size_t elem, int value)
@@ -28,10 +28,23 @@ public:
     return value;
   }
 
+  QString& getFeedback(size_t elem)
+  {
+    Q_ASSERT(elem < _values.size());
+    return _feedback[elem];
+  }
+
+  void setFeedback(size_t elem, QString& str)
+  {
+    Q_ASSERT(elem < _values.size());
+    _feedback[elem] = str;
+  }
+
   size_t size() { return _values.size(); }
 
 private:
   std::vector<int> _values;
+  std::vector<QString> _feedback;
 };
 
 class Student
@@ -41,9 +54,14 @@ public:
     _grades(numQuestions)
   { }
 
+  int getGrade(size_t question) { return _grades.get(question); }
+  QString& getFeedback(size_t question) { return _grades.getFeedback(question); }
+  QString& getStudentName() { return _name; }
+  QString& getStudentId() { return _studentid; }
+
 private:
-  std::string _name;
-  std::string _studentid;
+  QString _name;
+  QString _studentid;
   GradeArray  _grades;
 };
 
@@ -80,15 +98,11 @@ private:
     _students(numStudents, numQuestions)
   { }
 
-  size_t getNumQuestions()
-  {
-    return _maxGrades.size();
-  }
-
-  size_t getNumStudents()
-  {
-    return _students.size();
-  }
+public:
+  size_t getNumQuestions() { return _maxGrades.size(); }
+  size_t getNumStudents() { return _students.size(); }
+  Student& getStudent(size_t elem) { return _students.get(elem); }
+  int getQuestionMaximum(size_t question) { return _maxGrades.get(question); }
 
 private:
   GradeArray _maxGrades;
