@@ -132,9 +132,17 @@ void MainWindow::handleEditQuestionScore(const QString& in)
   {
     num = in.toInt(&ok);
     if (!ok)
+    {
       GINFODIALOG("Grade entered must be an integer");
-    if ((num < 0) || (num >= Global::db()->getQuestionMaximum(curQuestion)))
+      ui->questionScore->setText("");
+      return;
+    }
+    if ((num < 0) || (num > Global::db()->getQuestionMaximum(curQuestion)))
+    {
       GINFODIALOG("Grade entered is not within acceptable range");
+      ui->questionScore->setText("");
+      return;
+    }
   }
   Global::db()->getStudent(curStudent()).setGrade(curQuestion, num);
 }
@@ -159,11 +167,13 @@ void MainWindow::handleEditQuestionMaximum(const QString& in)
     if (!ok)
     {
       GINFODIALOG("Maximum question value provided must be an integer");
+      ui->questionMaximum->setText("");
       return;
     }
     if (num < 0)
     {
       GINFODIALOG("Maximum question value provided is negative");
+      ui->questionMaximum->setText("");
       return;
     }
   }
@@ -179,6 +189,7 @@ void MainWindow::handleEditQuestionMaximum(const QString& in)
   if (num < max)
   {
     GINFODIALOG("Maximum question value is less than existing grades");
+    ui->questionMaximum->setText("");
     return;
   }
 
