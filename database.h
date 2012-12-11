@@ -79,10 +79,10 @@ public:
   static GradeWindow *gw();
   const QString& getStudentName() { return _name; }
   const QString& getStudentId() { return _studentid; }
-  void setGrade(size_t question, int in) { GASSERT(gw()->getGrade(_seq,question)==getStrFromGrade(_grades.get(question)), "GW mismatch"); _grades.set(question, in); gw()->setGrade(_seq,question,in); }
-  void setFeedback(size_t question, const QString& in) { GASSERT(gw()->getFeedback(_seq,question)==_grades.getFeedback(question), "GW mismatch"); _grades.setFeedback(question, in); gw()->setFeedback(_seq,question,in); }
-  void setStudentName(const QString& in) { GASSERT(gw()->getStudentName(_seq)==_name, "GW mismatch"); _name = in; gw()->setStudentName(_seq,in); }
-  void setStudentId(const QString& in) { GASSERT(gw()->getStudentId(_seq)==_studentid, "GW mismatch"); _studentid = in; gw()->setStudentId(_seq,in); }
+  void setGrade(size_t question, int in, bool check = true) { if (check) { GASSERT(gw()->getGrade(_seq,question)==getStrFromGrade(_grades.get(question)), "GW mismatch"); gw()->setGrade(_seq,question,in); } _grades.set(question, in); }
+  void setFeedback(size_t question, const QString& in, bool check = true) { if (check) { GASSERT(gw()->getFeedback(_seq,question)==_grades.getFeedback(question), "GW mismatch"); gw()->setFeedback(_seq,question,in); } _grades.setFeedback(question, in);  }
+  void setStudentName(const QString& in, bool check = true) { if (check) { GASSERT(gw()->getStudentName(_seq)==_name, "GW mismatch"); gw()->setStudentName(_seq,in); } _name = in; }
+  void setStudentId(const QString& in, bool check = true) { if (check) { GASSERT(gw()->getStudentId(_seq)==_studentid, "GW mismatch"); gw()->setStudentId(_seq,in); } _studentid = in; }
 
 private:
   size_t _seq;
@@ -126,11 +126,12 @@ private:
   { }
 
 public:
+  static GradeWindow *gw();
   size_t getNumQuestions() { return _maxGrades.size(); }
   size_t getNumStudents() { return _students.size(); }
   Student& getStudent(size_t elem) { return _students.get(elem); }
   int getQuestionMaximum(size_t question) { return _maxGrades.get(question); }
-  void setQuestionMaximum(size_t question, int in) { _maxGrades.set(question, in); }
+  void setQuestionMaximum(size_t question, int in, bool check = true) { if (check) { GASSERT(gw()->getMaximum(question)==getStrFromGrade(_maxGrades.get(question)), "GW mismatch"); gw()->setMaximum(question, in); } _maxGrades.set(question, in); }
 
 private:
   GradeArray _maxGrades;

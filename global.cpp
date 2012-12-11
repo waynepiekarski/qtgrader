@@ -150,24 +150,25 @@ void Global::initDatabase(QString filename)
       {
         int score = fields.at(q+3).toInt(&ok);
         if ((!ok) || (num < -1))
-          GEXITDIALOG(QString("Score value [%1] for question %2 was not valid student %3 of %4").arg(fields.at(q+3)).arg(q+1).arg(student+1).arg(numStudents));
-        Global::db()->setQuestionMaximum(q, score);
+          GEXITDIALOG(QString("Score value [%1] for question %2 was not valid for maximum values").arg(fields.at(q+3)).arg(q+1));
+        Global::db()->setQuestionMaximum(q, score, false);
       }
     }
     else
     {
       Student &entry = Global::db()->getStudent(student);
-      entry.setStudentId(fields.at(1));
-      entry.setStudentName(fields.at(2));
+      entry.setStudentId(fields.at(1), false);
+      entry.setStudentName(fields.at(2), false);
       for (size_t q = 0; q < numQuestions; q++)
       {
         int score = fields.at(q+3).toInt(&ok);
-        if ((!ok) || (num < -1) || (num > Global::db()->getQuestionMaximum(q)))
+        GDEBUG("Ok = %d, Score = %d, Max = %d", ok, score, Global::db()->getQuestionMaximum(q));
+        if ((!ok) || (score < -1) || (score > Global::db()->getQuestionMaximum(q)))
           GEXITDIALOG(QString("Score value [%1] for question %2 was not valid student %3 of %4").arg(fields.at(q+3)).arg(q+1).arg(student+1).arg(numStudents));
-        entry.setGrade(q, score);
+        entry.setGrade(q, score, false);
       }
       for (size_t q = 0; q < numQuestions; q++)
-        entry.setFeedback(q, fields.at(q + 3 + numQuestions));
+        entry.setFeedback(q, fields.at(q + 3 + numQuestions), false);
     }
   }
 }
