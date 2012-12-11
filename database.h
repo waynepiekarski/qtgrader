@@ -15,27 +15,28 @@ public:
 
   void set(size_t elem, int value)
   {
-    Q_ASSERT((value == -1)||(value >= 0));
-    Q_ASSERT(elem < _values.size());
+    GASSERT((value == -1)||(value >= 0), "Value suppled %d is not a valid grade", value);
+    GASSERT(elem < _values.size(), "Element %zu is out of bounds for %zu elements", elem, _values.size());
     _values[elem] = value;
   }
 
   int get(size_t elem)
   {
-    Q_ASSERT(elem < _values.size());
+    GASSERT(elem < _values.size(), "Element %zu is out of bounds for %zu elements", elem, _values.size());
     int value = _values[elem];
-    Q_ASSERT((value == -1)||(value >= 0));
+    GASSERT((value == -1)||(value >= 0), "Value retrieved %d is not a valid grade", value);
     return value;
   }
 
   const QString& getFeedback(size_t elem)
   {
-    Q_ASSERT(elem < _values.size());
+    GASSERT(elem < _values.size(), "Element %zu is out of bounds for %zu elements", elem, _values.size());
     return _feedback[elem];
   }
 
   void setFeedback(size_t elem, const QString& str)
   {
+    GASSERT(elem < _values.size(), "Element %zu is out of bounds for %zu elements", elem, _values.size());
     Q_ASSERT(elem < _values.size());
     _feedback[elem] = str;
   }
@@ -74,14 +75,14 @@ class StudentArray
 public:
   StudentArray(size_t numStudents, size_t numQuestions)
   {
-    Q_ASSERT(numStudents > 0);
+    GASSERT(numStudents > 0, "Number of students %zu is not valid", numStudents);
     for (size_t i = 0; i < numStudents; i++)
       _students.push_back(Student(numQuestions));
   }
 
   Student& get(size_t elem)
   {
-    Q_ASSERT(elem < _students.size());
+    GASSERT(elem < _students.size(), "Element %zu is out of bounds for %zu elements", elem, _students.size());
     return _students[elem];
   }
 
@@ -108,6 +109,14 @@ public:
   Student& getStudent(size_t elem) { return _students.get(elem); }
   int getQuestionMaximum(size_t question) { return _maxGrades.get(question); }
   void setQuestionMaximum(size_t question, int in) { _maxGrades.set(question, in); }
+
+  static QString getStrFromGrade(int grade)
+  {
+    if (grade >= 0)
+      return QString("%1").arg(grade);
+    else
+      return QString("");
+  }
 
 private:
   GradeArray _maxGrades;

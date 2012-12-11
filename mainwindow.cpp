@@ -77,7 +77,7 @@ void MainWindow::handlePageNext()
   else
     curPage++;
 #endif // NO_WRAPPING
-  Q_ASSERT(curPage < Global::getNumPages());
+  GASSERT(curPage < Global::getNumPages(), "Current page %zu is out of bounds for %zu pages", curPage, Global::getNumPages());
   adjustPage(curPage);
 }
 
@@ -122,11 +122,20 @@ void MainWindow::handleEditStudentName(const QString& in)
 void MainWindow::handleEditQuestionScore(const QString& in)
 {
   bool ok;
-  int num = in.toInt(&ok);
-  if (!ok)
-    GINFODIALOG("Grade entered must be an integer");
-  if ((num < 0) || (num >= Global::db()->getQuestionMaximum(curQuestion)))
-    GINFODIALOG("Grade entered is not within acceptable range");
+  int num;
+  if (in == "")
+  {
+    // Convert empty strings into -1 marker to indicate no grade entered
+    num = -1;
+  }
+  else
+  {
+    num = in.toInt(&ok);
+    if (!ok)
+      GINFODIALOG("Grade entered must be an integer");
+    if ((num < 0) || (num >= Global::db()->getQuestionMaximum(curQuestion)))
+      GINFODIALOG("Grade entered is not within acceptable range");
+  }
   Global::db()->getStudent(curStudent()).setGrade(curQuestion, num);
 }
 
@@ -138,21 +147,30 @@ void MainWindow::handleEditQuestionFeedback(const QString& in)
 void MainWindow::handleEditQuestionMaximum(const QString& in)
 {
   bool ok;
-  int num = in.toInt(&ok);
-  if (!ok)
+  int num;
+  if (in == "")
   {
-    GINFODIALOG("Maximum question value provided must be an integer");
-    return;
+    // Convert empty strings into -1 marker to indicate no grade entered
+    num = -1;
   }
-  if (num < 0)
+  else
   {
-    GINFODIALOG("Maximum question value provided is negative");
-    return;
+    num = in.toInt(&ok);
+    if (!ok)
+    {
+      GINFODIALOG("Maximum question value provided must be an integer");
+      return;
+    }
+    if (num < 0)
+    {
+      GINFODIALOG("Maximum question value provided is negative");
+      return;
+    }
   }
 
   // Check all entered grades to see if they are less than the new maximum
   int max = -1;
-  for (int i = 0; Global::db()->getNumStudents(); i++)
+  for (size_t i = 0; i < Global::db()->getNumStudents(); i++)
   {
     int v = Global::db()->getStudent(i).getGrade(curQuestion);
     if (v > max)
@@ -178,8 +196,8 @@ void MainWindow::adjustQuestion(size_t question)
   curQuestion = question;
   ui->questionStats->setText(QString("Question %1 of %2").arg(curQuestion+1).arg(Global::getNumQuestions()));
   ui->questionFeedback->setText(Global::db()->getStudent(curStudent()).getFeedback(curQuestion));
-  ui->questionMaximum->setText(QString("%1").arg(Global::db()->getQuestionMaximum(curQuestion)));
-  ui->questionScore->setText(QString("%1").arg(Global::db()->getStudent(curStudent()).getGrade(curQuestion)));
+  ui->questionMaximum->setText(Database::getStrFromGrade(Global::db()->getQuestionMaximum(curQuestion)));
+  ui->questionScore->setText(Database::getStrFromGrade(Global::db()->getStudent(curStudent()).getGrade(curQuestion)));
 }
 
 void MainWindow::adjustPage(size_t page)
