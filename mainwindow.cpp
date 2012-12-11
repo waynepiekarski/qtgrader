@@ -46,6 +46,16 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->questionScore,    SIGNAL(textEdited(const QString&)), this, SLOT(handleEditQuestionScore(const QString&)));
   connect(ui->questionFeedback, SIGNAL(textEdited(const QString&)), this, SLOT(handleEditQuestionFeedback(const QString&)));
   connect(ui->questionMaximum,  SIGNAL(textEdited(const QString&)), this, SLOT(handleEditQuestionMaximum(const QString&)));
+  connect(ui->action0_Points,   SIGNAL(triggered()), this, SLOT(handleScore0()));
+  connect(ui->action1_Point,    SIGNAL(triggered()), this, SLOT(handleScore1()));
+  connect(ui->action2_Points,   SIGNAL(triggered()), this, SLOT(handleScore2()));
+  connect(ui->action3_Points,   SIGNAL(triggered()), this, SLOT(handleScore3()));
+  connect(ui->action4_Points,   SIGNAL(triggered()), this, SLOT(handleScore4()));
+  connect(ui->action5_Points,   SIGNAL(triggered()), this, SLOT(handleScore5()));
+  connect(ui->action6_Points,   SIGNAL(triggered()), this, SLOT(handleScore6()));
+  connect(ui->action7_Points,   SIGNAL(triggered()), this, SLOT(handleScore7()));
+  connect(ui->action8_Points,   SIGNAL(triggered()), this, SLOT(handleScore8()));
+  connect(ui->actionEmpty_Points, SIGNAL(triggered()), this, SLOT(handleScoreEmpty()));
 
   /* Now set the first page and first question */
   adjustPage(0);
@@ -146,6 +156,20 @@ void MainWindow::handleEditQuestionScore(const QString& in)
     }
   }
   Global::db()->getStudent(curStudent()).setGrade(curQuestion, num);
+}
+
+void MainWindow::handleScore(int in)
+{
+  if (in > Global::db()->getQuestionMaximum(curQuestion))
+  {
+    GDEBUG ("Rejected score %d from function keys since it is equal or higher than maximum %d", in, Global::db()->getQuestionMaximum(curQuestion));
+    GINFODIALOG("Rejected score since it is higher than the maximum");
+    return;
+  }
+  GASSERT(in >= -1, "Score value %d is not valid", in);
+  GDEBUG ("Received score %d from function keys", in);
+  Global::db()->getStudent(curStudent()).setGrade(curQuestion, in);
+  ui->questionScore->setText(Database::getStrFromGrade(in));
 }
 
 void MainWindow::handleEditQuestionFeedback(const QString& in)

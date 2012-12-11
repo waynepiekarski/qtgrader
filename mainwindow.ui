@@ -155,6 +155,9 @@
             <property name="text">
              <string>&lt;&lt;</string>
             </property>
+            <property name="shortcut">
+             <string>Meta+Home</string>
+            </property>
            </widget>
           </item>
           <item>
@@ -190,6 +193,9 @@
             <property name="text">
              <string>&gt;&gt;</string>
             </property>
+            <property name="shortcut">
+             <string>Meta+End</string>
+            </property>
            </widget>
           </item>
           <item>
@@ -209,6 +215,9 @@
             </property>
             <property name="text">
              <string>&lt;&lt;</string>
+            </property>
+            <property name="shortcut">
+             <string>PgUp</string>
             </property>
            </widget>
           </item>
@@ -239,6 +248,9 @@
             <property name="text">
              <string>&gt;&gt;</string>
             </property>
+            <property name="shortcut">
+             <string>PgDown</string>
+            </property>
            </widget>
           </item>
          </layout>
@@ -256,6 +268,9 @@
             <property name="text">
              <string>&lt;&lt;</string>
             </property>
+            <property name="shortcut">
+             <string>Home</string>
+            </property>
            </widget>
           </item>
           <item>
@@ -266,8 +281,17 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>130</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
-             <string>Question # of #</string>
+             <string>Question ## of ##</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -281,6 +305,9 @@
             </property>
             <property name="text">
              <string>&gt;&gt;</string>
+            </property>
+            <property name="shortcut">
+             <string>End</string>
             </property>
            </widget>
           </item>
@@ -400,7 +427,7 @@
              <set>Qt::ImhDigitsOnly</set>
             </property>
             <property name="text">
-             <string>0</string>
+             <string>#</string>
             </property>
             <property name="maxLength">
              <number>1</number>
@@ -426,7 +453,7 @@
              <set>Qt::ImhDigitsOnly</set>
             </property>
             <property name="text">
-             <string>0</string>
+             <string>#</string>
             </property>
             <property name="maxLength">
              <number>1</number>
@@ -579,6 +606,7 @@
     <addaction name="action6_Points"/>
     <addaction name="action7_Points"/>
     <addaction name="action8_Points"/>
+    <addaction name="actionEmpty_Points"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuPage"/>
@@ -713,6 +741,14 @@
    </property>
    <property name="shortcut">
     <string>Esc</string>
+   </property>
+  </action>
+  <action name="actionEmpty_Points">
+   <property name="text">
+    <string>Empty Points</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+Del</string>
    </property>
   </action>
  </widget>
