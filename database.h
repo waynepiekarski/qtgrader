@@ -28,13 +28,13 @@ public:
     return value;
   }
 
-  QString& getFeedback(size_t elem)
+  const QString& getFeedback(size_t elem)
   {
     Q_ASSERT(elem < _values.size());
     return _feedback[elem];
   }
 
-  void setFeedback(size_t elem, QString& str)
+  void setFeedback(size_t elem, const QString& str)
   {
     Q_ASSERT(elem < _values.size());
     _feedback[elem] = str;
@@ -55,9 +55,13 @@ public:
   { }
 
   int getGrade(size_t question) { return _grades.get(question); }
-  QString& getFeedback(size_t question) { return _grades.getFeedback(question); }
-  QString& getStudentName() { return _name; }
-  QString& getStudentId() { return _studentid; }
+  const QString& getFeedback(size_t question) { return _grades.getFeedback(question); }
+  const QString& getStudentName() { return _name; }
+  const QString& getStudentId() { return _studentid; }
+  void setGrade(size_t question, int in) { _grades.set(question, in); }
+  void setFeedback(size_t question, const QString& in) { _grades.setFeedback(question, in); }
+  void setStudentName(const QString& in) { _name = in; }
+  void setStudentId(const QString& in) { _studentid = in; }
 
 private:
   QString _name;
@@ -103,6 +107,7 @@ public:
   size_t getNumStudents() { return _students.size(); }
   Student& getStudent(size_t elem) { return _students.get(elem); }
   int getQuestionMaximum(size_t question) { return _maxGrades.get(question); }
+  void setQuestionMaximum(size_t question, int in) { _maxGrades.set(question, in); }
 
 private:
   GradeArray _maxGrades;

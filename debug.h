@@ -17,5 +17,6 @@
 #endif
 
 void GEXITDIALOG (QString str);
+void GINFODIALOG (QString str);
 
 void GEXIT (int result);

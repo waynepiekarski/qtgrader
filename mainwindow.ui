@@ -396,8 +396,14 @@
           </item>
           <item>
            <widget class="QLineEdit" name="questionScore">
+            <property name="inputMethodHints">
+             <set>Qt::ImhDigitsOnly</set>
+            </property>
             <property name="text">
-             <string>###</string>
+             <string>0</string>
+            </property>
+            <property name="maxLength">
+             <number>1</number>
             </property>
            </widget>
           </item>
@@ -416,8 +422,14 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="inputMethodHints">
+             <set>Qt::ImhDigitsOnly</set>
+            </property>
             <property name="text">
-             <string>###</string>
+             <string>0</string>
+            </property>
+            <property name="maxLength">
+             <number>1</number>
             </property>
            </widget>
           </item>

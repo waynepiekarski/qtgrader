@@ -34,12 +34,18 @@ public slots:
   void handleZoomOne();
   void handleSave();
   void handleQuit();
+  void handleEditStudentId(const QString&);
+  void handleEditStudentName(const QString&);
+  void handleEditQuestionScore(const QString&);
+  void handleEditQuestionFeedback(const QString&);
+  void handleEditQuestionMaximum(const QString&);
 
 private:
   void adjustZoomRelative(float factor);
   void adjustZoomFixed(float factor);
   void adjustQuestion(size_t question);
   void adjustPage(size_t page);
+  size_t curStudent();
 
   Ui::MainWindow *ui;
   GradeWindow *gw;
