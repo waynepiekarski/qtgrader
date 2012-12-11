@@ -34,13 +34,13 @@ void Global::save(QString filename)
   for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
     file << "\t" << Global::db()->getQuestionMaximum(q);
   for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
-    file << "\t"; // Emit empty feedback columns
+    file << "\t" << "NF"; // Emit empty feedback columns
   file << "\n";
 
   for (size_t s = 0; s < Global::db()->getNumStudents(); s++)
   {
     Student& student = Global::db()->getStudent(s);
-    file << s << "\t" << student.getStudentId() << "\t" << student.getStudentName() << "\t";
+    file << s << "\t" << student.getStudentId() << "\t" << student.getStudentName();
     for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
       file << "\t" << student.getGrade(q);
     for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
@@ -134,8 +134,8 @@ void Global::initDatabase(QString filename)
     QStringList fields = in.split("\t");
     if (fields.size() != (2*(int)numQuestions + 3))
       GEXITDIALOG(QString("Found only %1 columns in [%2] for student %3 of %4 when expected 2x%5+3 columns").arg(fields.size()).arg(in).arg(student+1).arg(numStudents).arg(numQuestions));
-    for (size_t col = 0; col < numQuestions+3; col++) // Do not search feedback, since these can be empty
-      if (fields.at(col) != "")
+    for (size_t col = 3; col < numQuestions+3; col++) // Do not search student id/name, or any feedback, since these can be empty
+      if (fields.at(col) == "")
         GEXITDIALOG(QString("Found empty column %1 for student %3 of %4").arg(col+1).arg(student+1).arg(numStudents));
     bool ok;
     int num = fields.at(0).toInt(&ok);
@@ -144,7 +144,7 @@ void Global::initDatabase(QString filename)
 
     if (student == -1)
     {
-      if ((fields.at(1) != "MAXIMUM") && (fields.at(2) != "MAXIMUM"))
+      if ((fields.at(1) != "MAX") && (fields.at(2) != "MAX"))
         GEXITDIALOG(QString("Expected MAXIMUM headers for first row of data, but found [%1] [%2] instead").arg(fields.at(1).arg(fields.at(2))));
       for (size_t q = 0; q < numQuestions; q++)
       {
