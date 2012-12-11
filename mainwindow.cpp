@@ -15,7 +15,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
   /* Set up the Qt user interface */
   ui->setupUi(this);
+
+  /* Set up the GradeWindow and also fill the table with initial values from the database */
   Global::setGradeWindow(new GradeWindow);
+  Global::getGradeWindow()->update();
 
   /* Set up page change buttons */
   connect(ui->pageLeft ,   SIGNAL(clicked()), this, SLOT(handlePagePrev()));
@@ -169,7 +172,7 @@ void MainWindow::handleScore(int in)
   GASSERT(in >= -1, "Score value %d is not valid", in);
   GDEBUG ("Received score %d from function keys", in);
   Global::db()->getStudent(curStudent()).setGrade(curQuestion, in);
-  ui->questionScore->setText(Database::getStrFromGrade(in));
+  ui->questionScore->setText(getStrFromGrade(in));
 }
 
 void MainWindow::handleEditQuestionFeedback(const QString& in)
@@ -232,8 +235,8 @@ void MainWindow::adjustQuestion(size_t question)
   curQuestion = question;
   ui->questionStats->setText(QString("Question %1 of %2").arg(curQuestion+1).arg(Global::getNumQuestions()));
   ui->questionFeedback->setText(Global::db()->getStudent(curStudent()).getFeedback(curQuestion));
-  ui->questionMaximum->setText(Database::getStrFromGrade(Global::db()->getQuestionMaximum(curQuestion)));
-  ui->questionScore->setText(Database::getStrFromGrade(Global::db()->getStudent(curStudent()).getGrade(curQuestion)));
+  ui->questionMaximum->setText(getStrFromGrade(Global::db()->getQuestionMaximum(curQuestion)));
+  ui->questionScore->setText(getStrFromGrade(Global::db()->getStudent(curStudent()).getGrade(curQuestion)));
   Global::gw()->update(curStudent(), curQuestion);
 }
 

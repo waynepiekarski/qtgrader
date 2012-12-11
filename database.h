@@ -4,7 +4,16 @@
 #include <vector>
 
 #include "gradewindow.h"
+#include "debug.h"
 #include "pages.h"
+
+static QString getStrFromGrade(int grade)
+{
+  if (grade >= 0)
+    return QString("%1").arg(grade);
+  else
+    return QString("");
+}
 
 class GradeArray
 {
@@ -52,20 +61,31 @@ private:
 class Student
 {
 public:
-  Student(size_t numQuestions) :
+  Student(size_t seq, size_t numQuestions) :
+    _seq(seq),
     _grades(numQuestions)
   { }
 
-  int getGrade(size_t question) { return _grades.get(question); }
-  const QString& getFeedback(size_t question) { return _grades.getFeedback(question); }
+  size_t getSeq() { return _seq; }
+  int getGrade(size_t question)
+  {
+    return _grades.get(question);
+  }
+  const QString& getFeedback(size_t question)
+  {
+    return _grades.getFeedback(question);
+  }
+
+  static GradeWindow *gw();
   const QString& getStudentName() { return _name; }
   const QString& getStudentId() { return _studentid; }
-  void setGrade(size_t question, int in) { _grades.set(question, in); }
-  void setFeedback(size_t question, const QString& in) { _grades.setFeedback(question, in); }
-  void setStudentName(const QString& in) { _name = in; }
-  void setStudentId(const QString& in) { _studentid = in; }
+  void setGrade(size_t question, int in) { GASSERT(gw()->getGrade(_seq,question)==getStrFromGrade(_grades.get(question)), "GW mismatch"); _grades.set(question, in); gw()->setGrade(_seq,question,in); }
+  void setFeedback(size_t question, const QString& in) { GASSERT(gw()->getFeedback(_seq,question)==_grades.getFeedback(question), "GW mismatch"); _grades.setFeedback(question, in); gw()->setFeedback(_seq,question,in); }
+  void setStudentName(const QString& in) { GASSERT(gw()->getStudentName(_seq)==_name, "GW mismatch"); _name = in; gw()->setStudentName(_seq,in); }
+  void setStudentId(const QString& in) { GASSERT(gw()->getStudentId(_seq)==_studentid, "GW mismatch"); _studentid = in; gw()->setStudentId(_seq,in); }
 
 private:
+  size_t _seq;
   QString _name;
   QString _studentid;
   GradeArray  _grades;
@@ -78,12 +98,13 @@ public:
   {
     GASSERT(numStudents > 0, "Number of students %zu is not valid", numStudents);
     for (size_t i = 0; i < numStudents; i++)
-      _students.push_back(Student(numQuestions));
+      _students.push_back(Student(i, numQuestions));
   }
 
   Student& get(size_t elem)
   {
     GASSERT(elem < _students.size(), "Element %zu is out of bounds for %zu elements", elem, _students.size());
+    GASSERT(elem == _students[elem].getSeq(), "Element %zu does not match stored sequence number %zu", elem, _students[elem].getSeq());
     return _students[elem];
   }
 
@@ -110,14 +131,6 @@ public:
   Student& getStudent(size_t elem) { return _students.get(elem); }
   int getQuestionMaximum(size_t question) { return _maxGrades.get(question); }
   void setQuestionMaximum(size_t question, int in) { _maxGrades.set(question, in); }
-
-  static QString getStrFromGrade(int grade)
-  {
-    if (grade >= 0)
-      return QString("%1").arg(grade);
-    else
-      return QString("");
-  }
 
 private:
   GradeArray _maxGrades;

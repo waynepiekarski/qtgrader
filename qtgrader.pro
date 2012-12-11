@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     gradewindow.cpp \
     startup.cpp \
     debug.cpp \
-    global.cpp
+    global.cpp \
+    database.cpp
 
 HEADERS  += mainwindow.h \
     gradewindow.h \
