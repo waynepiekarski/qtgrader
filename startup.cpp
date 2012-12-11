@@ -110,7 +110,7 @@ void StartupDialog::handleLoadExistingProject()
   QString fileName = QFileDialog::getOpenFileName(this,
                                                   tr("Open Project"),
                                                   startFile,
-                                                  tr("Project File (*.prj)"));
+                                                  tr("Project File (*.qtg)"));
   if (fileName != NULL)
   {
     ui->existingProject->setText(fileName);
