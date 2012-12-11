@@ -16,7 +16,6 @@ public:
   explicit GradeWindow(QWidget *parent = 0);
   ~GradeWindow();
   Ui::GradeWindow* getUI() { return ui; }
-  void update();
   void update(size_t curStudent, size_t curQuestion);
 
   QTableWidgetItem* getItem(int row, int col);

@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
   /* Set up the GradeWindow and also fill the table with initial values from the database */
   Global::setGradeWindow(new GradeWindow);
-  Global::getGradeWindow()->update();
 
   /* Set up page change buttons */
   connect(ui->pageLeft ,   SIGNAL(clicked()), this, SLOT(handlePagePrev()));
