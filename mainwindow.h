@@ -59,7 +59,6 @@ private:
   size_t curStudent();
 
   Ui::MainWindow *ui;
-  GradeWindow *gw;
   size_t curPage;
   size_t curQuestion;
   float zoomFactor;

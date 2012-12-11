@@ -1,3 +1,4 @@
+#include "gradewindow.h"
 #include "database.h"
 #include "pages.h"
 #include "global.h"
@@ -7,6 +8,7 @@
 #include <QFile>
 #include <QTextStream>
 
+GradeWindow* Global::_gw = NULL;
 Database* Global::_db = NULL;
 Pages* Global::_pages = NULL;
 size_t Global::_numPagesPerStudent = 0;

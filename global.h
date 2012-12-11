@@ -3,6 +3,7 @@
 #include "database.h"
 #include "debug.h"
 
+class GradeWindow;
 class Pages;
 
 #define DB_VERSION "DB v1.0"
@@ -40,7 +41,12 @@ public:
   }
   static QPixmap& getQPixmap(size_t page) { return getPages()->getQPixmap(page); }
 
+  static void setGradeWindow(GradeWindow *in) { GASSERT(!_gw, "GradeWindow is already set"); _gw = in; }
+  static GradeWindow* getGradeWindow() { GASSERT(_gw, "GradeWindow is not set"); return _gw; }
+  static GradeWindow* gw() { return getGradeWindow(); }
+
 private:
+  static GradeWindow *_gw;
   static Database *_db;
   static Pages *_pages;
   static size_t _numPagesPerStudent;

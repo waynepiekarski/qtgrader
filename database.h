@@ -3,6 +3,7 @@
 #include <QtGlobal>
 #include <vector>
 
+#include "gradewindow.h"
 #include "pages.h"
 
 class GradeArray

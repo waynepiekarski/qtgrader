@@ -16,6 +16,7 @@ public:
   ~GradeWindow();
   Ui::GradeWindow* getUI() { return ui; }
   void update();
+  void update(size_t curStudent, size_t curQuestion);
 
 public slots:
   void handleGradeWindow ();

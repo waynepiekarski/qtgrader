@@ -9,13 +9,13 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    gw(new GradeWindow),
     curPage(0),
     curQuestion(0),
     zoomFactor(1.0)
 {
   /* Set up the Qt user interface */
   ui->setupUi(this);
+  Global::setGradeWindow(new GradeWindow);
 
   /* Set up page change buttons */
   connect(ui->pageLeft ,   SIGNAL(clicked()), this, SLOT(handlePagePrev()));
@@ -32,13 +32,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
   /* Set up various actions */
   connect(ui->actionSave ,    SIGNAL(triggered()), this, SLOT(handleSave()));
-  connect(gw->getUI()->actionSave , SIGNAL(triggered()), this, SLOT(handleSave()));
+  connect(Global::gw()->getUI()->actionSave, SIGNAL(triggered()), this, SLOT(handleSave()));
   connect(ui->actionPagePrev, SIGNAL(triggered()), this, SLOT(handlePagePrev()));
   connect(ui->actionPageNext, SIGNAL(triggered()), this, SLOT(handlePageNext()));
   connect(ui->actionStudentPrev, SIGNAL(triggered()), this, SLOT(handleStudentPrev()));
   connect(ui->actionStudentNext, SIGNAL(triggered()), this, SLOT(handleStudentNext()));
-  connect(ui->actionGradeWindow, SIGNAL(triggered()), gw, SLOT(handleGradeWindow()));
-  connect(gw->getUI()->actionGradeWindow, SIGNAL(triggered()), gw, SLOT(handleGradeWindow()));
+  connect(ui->actionGradeWindow, SIGNAL(triggered()), Global::gw(), SLOT(handleGradeWindow()));
+  connect(Global::gw()->getUI()->actionGradeWindow, SIGNAL(triggered()), Global::gw(), SLOT(handleGradeWindow()));
 
   /* Detect user input in data entry fields */
   connect(ui->studentId,        SIGNAL(textEdited(const QString&)), this, SLOT(handleEditStudentId(const QString&)));
@@ -234,6 +234,7 @@ void MainWindow::adjustQuestion(size_t question)
   ui->questionFeedback->setText(Global::db()->getStudent(curStudent()).getFeedback(curQuestion));
   ui->questionMaximum->setText(Database::getStrFromGrade(Global::db()->getQuestionMaximum(curQuestion)));
   ui->questionScore->setText(Database::getStrFromGrade(Global::db()->getStudent(curStudent()).getGrade(curQuestion)));
+  Global::gw()->update(curStudent(), curQuestion);
 }
 
 void MainWindow::adjustPage(size_t page)
