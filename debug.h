@@ -16,7 +16,9 @@
 #define GASSERT(cond, fmt, ...) if (!(cond)) { GFATAL("Assertion %s failed - " fmt, __GASSERT_STR(cond), ## __VA_ARGS__); }
 #endif
 
-void GEXITDIALOG (QString str);
-void GINFODIALOG (QString str);
+void _GEXITDIALOG (QString str, const char *file, int line);
+#define GEXITDIALOG(str) _GEXITDIALOG(str, __FILE__, __LINE__)
+void _GINFODIALOG (QString str, const char *file, int line);
+#define GINFODIALOG(str) _GINFODIALOG(str, __FILE__, __LINE__)
 
 void GEXIT (int result);
