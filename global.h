@@ -5,6 +5,8 @@
 
 class Pages;
 
+#define DB_VERSION "DB v1.0"
+
 class Global
 {
 public:
@@ -14,6 +16,8 @@ public:
     _numPagesPerStudent = numPagesPerStudent;
     _db = new Database(numStudents, numQuestions);
   }
+  static void initDatabase(QString filename);
+  static void save(QString filename);
 
   static void initPages(QString path)
   {
@@ -24,6 +28,7 @@ public:
   static Database* db() { return getDatabase(); }
   static Database* getDatabase() { GASSERT(_db, "DB not initialized"); return _db; }
   static Pages* getPages() { GASSERT(_pages, "Pages not initialized"); return _pages; }
+  static QString& getPath() { return getPages()->getPath(); }
 
   static size_t getNumPages() { return getPages()->size(); }
   static size_t getNumStudents() { return getDatabase()->getNumStudents(); }

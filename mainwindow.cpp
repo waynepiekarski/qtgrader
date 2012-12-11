@@ -4,6 +4,7 @@
 #include "database.h"
 #include "global.h"
 #include <QDir>
+#include <QDateTime>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -235,7 +236,13 @@ void MainWindow::handleQuit()
 
 void MainWindow::handleSave()
 {
-  fprintf (stderr, "Save ignored\n");
+  QString savefile (QDir(Global::getPath()).canonicalPath() + "/database.qtg");
+  GDEBUG("Writing out main database to [%s]", qPrintable(savefile));
+  Global::save(savefile);
+  QDateTime current = QDateTime::currentDateTime();
+  QString bakfile (QDir(Global::getPath()).canonicalPath() + "/database-" + current.toString("yyyyMMdd-hhmmss") + ".bak");
+  GDEBUG("Writing out backup database to [%s]", qPrintable(bakfile));
+  Global::save(bakfile);
 }
 
 void MainWindow::adjustZoomRelative(float factor)

@@ -45,7 +45,8 @@ StartupDialog::StartupDialog(QWidget *parent) :
     /* Handle the case where we load a project file */
     if (ui->existingProject->text().length() == 0)
       GEXITDIALOG("Must specify either a project file or an image directory");
-    GFATAL("Existing project selected [%s]", qPrintable(ui->existingProject->text()));
+    GDEBUG("Existing project selected [%s]", qPrintable(ui->existingProject->text()));
+    Global::initDatabase(ui->existingProject->text());
   }
   else
   {

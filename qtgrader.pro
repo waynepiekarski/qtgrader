@@ -15,7 +15,6 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     gradewindow.cpp \
-    database.cpp \
     startup.cpp \
     debug.cpp \
     global.cpp

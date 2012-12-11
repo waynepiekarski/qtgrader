@@ -13,6 +13,7 @@ private:
   Pages(QString path)
   {
     /* Scan the directory for images */
+    _path = path;
     QDir dir (path, "*.jpg");
     dir.setFilter(QDir::Files);
     GDEBUG("Scanning for images in dir [%s]",qPrintable(dir.canonicalPath()));
@@ -57,8 +58,11 @@ private:
     return filenames.size();
   }
 
+  QString& getPath() { return _path; }
+
 private:
   std::vector<QString> filenames;
   std::vector<QImage*> images;
   std::vector<QPixmap> pixes;
+  QString _path;
 };
