@@ -36,6 +36,9 @@ public:
 public slots:
   void handleGradeWindow ();
   void handleCellChanged (int row, int col, int prevRow, int prevCol);
+  void handleResizeContents();
+  void handleResizeSmall();
+  void handleResizeLarge();
 
 private:
   Ui::GradeWindow *ui;

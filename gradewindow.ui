@@ -60,6 +60,9 @@
      <string>Window</string>
     </property>
     <addaction name="actionGradeWindow"/>
+    <addaction name="actionResizeContents"/>
+    <addaction name="actionResizeSmall"/>
+    <addaction name="actionResizeLarge"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
@@ -94,6 +97,21 @@
    </property>
    <property name="shortcut">
     <string>Meta+Q</string>
+   </property>
+  </action>
+  <action name="actionResizeContents">
+   <property name="text">
+    <string>Resize To Contents</string>
+   </property>
+  </action>
+  <action name="actionResizeSmall">
+   <property name="text">
+    <string>Resize Small</string>
+   </property>
+  </action>
+  <action name="actionResizeLarge">
+   <property name="text">
+    <string>Resize Large</string>
    </property>
   </action>
  </widget>

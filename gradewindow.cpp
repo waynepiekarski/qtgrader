@@ -10,6 +10,9 @@ GradeWindow::GradeWindow(QWidget *parent) :
 {
   ui->setupUi(this);
   connect(ui->tableWidget, SIGNAL(currentCellChanged(int, int, int, int)), this, SLOT(handleCellChanged(int,int,int,int)));
+  connect(ui->actionResizeContents, SIGNAL(triggered()), this, SLOT(handleResizeContents()));
+  connect(ui->actionResizeLarge, SIGNAL(triggered()), this, SLOT(handleResizeLarge()));
+  connect(ui->actionResizeSmall, SIGNAL(triggered()), this, SLOT(handleResizeSmall()));
 
   ui->tableWidget->setColumnCount(RESERVED+Global::getNumQuestions());
   ui->tableWidget->setRowCount(Global::getNumStudents() + 1);
@@ -40,7 +43,9 @@ GradeWindow::GradeWindow(QWidget *parent) :
       setGradeFeedback(student.getSeq(), q, student.getGrade(q), student.getFeedback(q));
     }
   }
-  ui->tableWidget->resizeColumnsToContents();
+
+  // Resize so each cell can see just the grade value
+  handleResizeSmall();
 
   // Prevent edits to any of the cells
   for (int row = 0; row < ui->tableWidget->rowCount(); row++)
@@ -50,6 +55,25 @@ GradeWindow::GradeWindow(QWidget *parent) :
       GASSERT(i, "Could not find table item for row %d col %d", row, col);
       i->setFlags(i->flags() ^ Qt::ItemIsEditable);
     }
+}
+
+void GradeWindow::handleResizeContents()
+{
+  ui->tableWidget->resizeColumnsToContents();
+}
+
+void GradeWindow::handleResizeSmall()
+{
+  ui->tableWidget->resizeColumnsToContents();
+  for (int col = RESERVED; col < ui->tableWidget->columnCount(); col++)
+    ui->tableWidget->setColumnWidth(col, 50);
+}
+
+void GradeWindow::handleResizeLarge()
+{
+  ui->tableWidget->resizeColumnsToContents();
+  for (int col = RESERVED; col < ui->tableWidget->columnCount(); col++)
+    ui->tableWidget->setColumnWidth(col, 100);
 }
 
 GradeWindow::~GradeWindow()
