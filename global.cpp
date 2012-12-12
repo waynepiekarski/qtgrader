@@ -23,12 +23,13 @@ void Global::save(QString filename)
   QTextStream file (&fd);
 
   file << "VERSION=" << DB_VERSION << "\n";
-  file << "IMAGE_PATH=" << Global::getPages()->getPath() << "\n";
+  file << "IMAGE_PATH=.\n"; // Images are always in the same directory as the project file
   file << "QUESTIONS_PER_STUDENT=" << Global::db()->getNumQuestions() << "\n";
   GASSERT(_numPagesPerStudent > 0, "_numPagesPerStudent %zu is not valid", _numPagesPerStudent);
   file << "PAGES_PER_STUDENT=" << _numPagesPerStudent << "\n";
   file << "TOTAL_STUDENTS=" << Global::db()->getNumStudents() << "\n";
   file << "SAVE_DATE_TIME=" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "\n";
+  file << "NUM_IMAGES=" << Global::getPages()->size() << "\n";
 
   file << "-1\tMAX\tMAX";
   for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
@@ -67,17 +68,18 @@ void Global::initDatabase(QString filename)
   QTextStream file (&fd);
 
   // The first five lines contain the following information
-  // VERSION = %s
-  // IMAGE_PATH = %s
-  // QUESTIONS_PER_STUDENT = %d
-  // PAGES_PER_STUDENT = %d
-  // TOTAL_STUDENTS = %d
-  // SAVE_DATE_TIME = %s
+  // VERSION=%s
+  // IMAGE_PATH=%s
+  // QUESTIONS_PER_STUDENT=%d
+  // PAGES_PER_STUDENT=%d
+  // TOTAL_STUDENTS=%d
+  // SAVE_DATE_TIME=%s
+  // NUM_IMAGES=%d
   struct _keyvalue { QString key; QString string; size_t number; };
-  _keyvalue intro[6];
-  QString header_names[6] = { "VERSION", "IMAGE_PATH", "QUESTIONS_PER_STUDENT", "PAGES_PER_STUDENT", "TOTAL_STUDENTS", "SAVE_DATE_TIME" };
-  bool expect_numbers[6] = { false, false, true, true, true, false };
-  for (size_t i = 0; i < 6; i++)
+  _keyvalue intro[7];
+  QString header_names[7] = { "VERSION", "IMAGE_PATH", "QUESTIONS_PER_STUDENT", "PAGES_PER_STUDENT", "TOTAL_STUDENTS", "SAVE_DATE_TIME", "NUM_IMAGES" };
+  bool expect_numbers[7] = { false, false, true, true, true, false, true };
+  for (size_t i = 0; i < 7; i++)
   {
     if (file.atEnd())
       GEXITDIALOG(QString("Encountered end of file reading line %1").arg(i));
@@ -116,12 +118,26 @@ void Global::initDatabase(QString filename)
   size_t numPagesPerStudent = intro[3].number;
   size_t numStudents = intro[4].number;
   QString unused_date_time = intro[5].string;
+  size_t numImages = intro[6].number;
 
   // Initialize the database since we know all the dimensions now
   initDatabase(numStudents, numQuestions, numPagesPerStudent);
 
-  // Load in the pages as well
-  initPages(image_path);
+  // Image paths should always be . right now, nothing else is supported
+  if (image_path != ".")
+    GEXITDIALOG("Non-empty path found for image loading");
+  int slash = filename.lastIndexOf("/");
+  if (slash < 0)
+    GEXITDIALOG("Could not find ending slash in file name");
+  QString full_image_path = filename.left(slash);
+  GDEBUG("Using image path [%s] from input file [%s]", qPrintable(full_image_path), qPrintable(filename));
+
+  initPages(full_image_path);
+
+  // Check that the number of images loaded matches what we are expecting
+  GDEBUG ("Loaded in %zu images from [%s], input file says %zu images", getPages()->size(), qPrintable(image_path), numImages);
+  if (getPages()->size() != numImages)
+    GEXITDIALOG(QString("Found different number of images than was used for the save"));
 
   // Now populate the database. Each entry is of the following form:
   // IDNUM,STUDENTID,STUDENTNAME,Q0,Q1,..,QN,Feed0,Feed1,..,FeedN
@@ -162,7 +178,6 @@ void Global::initDatabase(QString filename)
       for (size_t q = 0; q < numQuestions; q++)
       {
         int score = fields.at(q+3).toInt(&ok);
-        GDEBUG("Ok = %d, Score = %d, Max = %d", ok, score, Global::db()->getQuestionMaximum(q));
         if ((!ok) || (score < -1) || (score > Global::db()->getQuestionMaximum(q)))
           GEXITDIALOG(QString("Score value [%1] for question %2 was not valid student %3 of %4").arg(fields.at(q+3)).arg(q+1).arg(student+1).arg(numStudents));
         entry.setGrade(q, score, false);
