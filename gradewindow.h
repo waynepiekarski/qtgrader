@@ -19,14 +19,16 @@ public:
   void update(size_t curStudent, size_t curQuestion);
 
   QTableWidgetItem* getItem(int row, int col);
-  QString getGrade(size_t student, size_t question);
-  QString getFeedback(size_t student, size_t question);
+  QString getTotalGrade(size_t student);
+  QString getGradeFeedback(size_t student, size_t question);
   QString getMaximum(size_t question);
   QString getStudentId(size_t student);
   QString getStudentName(size_t student);
+  QString getTotalMaximum();
 
-  void setGrade(size_t student, size_t question, int in);
-  void setFeedback(size_t student, size_t question, const QString& in);
+  void setTotalGrade(size_t student, int total);
+  void setGradeFeedback(size_t student, size_t question, int grade, const QString& feedback);
+  void setTotalMaximum(int in);
   void setMaximum(size_t question, int in);
   void setStudentId(size_t student, const QString& in);
   void setStudentName(size_t student, const QString& in);

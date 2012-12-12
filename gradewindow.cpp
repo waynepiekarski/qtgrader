@@ -2,6 +2,8 @@
 #include "ui_gradewindow.h"
 #include "global.h"
 
+#define RESERVED 3
+
 GradeWindow::GradeWindow(QWidget *parent) :
   QMainWindow(parent),
   ui(new Ui::GradeWindow)
@@ -9,20 +11,21 @@ GradeWindow::GradeWindow(QWidget *parent) :
   ui->setupUi(this);
   connect(ui->tableWidget, SIGNAL(currentCellChanged(int, int, int, int)), this, SLOT(handleCellChanged(int,int,int,int)));
 
-  ui->tableWidget->setColumnCount(2+2*Global::getNumQuestions());
+  ui->tableWidget->setColumnCount(RESERVED+Global::getNumQuestions());
   ui->tableWidget->setRowCount(Global::getNumStudents() + 1);
   ui->tableWidget->setHorizontalHeaderItem(0, new QTableWidgetItem(QString("StudentID")));
   ui->tableWidget->setHorizontalHeaderItem(1, new QTableWidgetItem(QString("StudentName")));
+  ui->tableWidget->setHorizontalHeaderItem(2, new QTableWidgetItem(QString("Total")));
 
   ui->tableWidget->setVerticalHeaderItem(0, new QTableWidgetItem(QString("%1").arg(-1)));
-  ui->tableWidget->setItem(0, 0, new QTableWidgetItem("MaximumId"));
-  ui->tableWidget->setItem(0, 1, new QTableWidgetItem("MaximumName"));
+  ui->tableWidget->setItem(0, 0, new QTableWidgetItem("-"));
+  ui->tableWidget->setItem(0, 1, new QTableWidgetItem("Maximum"));
+  ui->tableWidget->setItem(0, 2, new QTableWidgetItem(getStrFromGrade(Global::db()->getTotalMaximum())));
+
   for (size_t q = 0; q < Global::getNumQuestions(); q++)
   {
-    ui->tableWidget->setHorizontalHeaderItem(q+2, new QTableWidgetItem(QString("Q%1").arg(q+1)));
-    ui->tableWidget->setHorizontalHeaderItem(q+2+Global::getNumQuestions(), new QTableWidgetItem(QString("Feed%1").arg(q+1)));
-    ui->tableWidget->setItem(0, q + 2, new QTableWidgetItem(getStrFromGrade(Global::db()->getQuestionMaximum(q))));
-    ui->tableWidget->setItem(0, q + 2 + Global::getNumQuestions(), new QTableWidgetItem("NF"));
+    ui->tableWidget->setHorizontalHeaderItem(q+RESERVED, new QTableWidgetItem(QString("Q%1").arg(q+1)));
+    ui->tableWidget->setItem(0, q+RESERVED, new QTableWidgetItem(getStrFromGrade(Global::db()->getQuestionMaximum(q))));
   }
   for (size_t s = 0; s < Global::getNumStudents(); s++)
   {
@@ -30,10 +33,11 @@ GradeWindow::GradeWindow(QWidget *parent) :
     ui->tableWidget->setVerticalHeaderItem(s+1, new QTableWidgetItem(QString("%1").arg(s)));
     ui->tableWidget->setItem(s+1, 0, new QTableWidgetItem(student.getStudentId()));
     ui->tableWidget->setItem(s+1, 1, new QTableWidgetItem(student.getStudentName()));
+    ui->tableWidget->setItem(s+1, 2, new QTableWidgetItem(getStrFromGrade(student.getTotal())));
     for (size_t q = 0; q < Global::getNumQuestions(); q++)
     {
-      ui->tableWidget->setItem(s+1, q + 2, new QTableWidgetItem(getStrFromGrade(student.getGrade(q))));
-      ui->tableWidget->setItem(s+1, q + 2 + Global::getNumQuestions(), new QTableWidgetItem(student.getFeedback(q)));
+      ui->tableWidget->setItem(s+1, q+RESERVED, new QTableWidgetItem());
+      setGradeFeedback(student.getSeq(), q, student.getGrade(q), student.getFeedback(q));
     }
   }
   ui->tableWidget->resizeColumnsToContents();
@@ -74,16 +78,13 @@ void GradeWindow::handleCellChanged(int row, int col, int prevRow, int prevCol)
 
   /* Some testing code to detect changes, but it is also affected by the other parts of the UI */
   /*
-  if ((row >= 1) && (col >= 3))
+  if ((row >= 1) && (col >= RESERVED))
   {
     GDEBUG("In active region");
     size_t student = row - 1;
     size_t q = col - 3;
-    if (q < Global::getNumQuestions())
-      GDEBUG("Student %zu, Question %zu", student+1, q+1);
-    else if (q < Global::getNumQuestions()*2)
-      GDEBUG("Student %zu, Feedback %zu", student+1, q-Global::getNumQuestions()+1);
-    GASSERT(q < 2*Global::getNumQuestions(), "Q value %zu is not valid", q);
+    GASSERT(q < Global::getNumQuestions(), "Q value %zu is not valid", q);
+    GDEBUG("Student %zu, Question %zu", student+1, q+1);
   }
   */
 }
@@ -105,21 +106,21 @@ QTableWidgetItem* GradeWindow::getItem(int row, int col)
   return i;
 }
 
-QString GradeWindow::getGrade(size_t student, size_t question)
+QString GradeWindow::getTotalGrade(size_t student)
 {
-  QTableWidgetItem *i = getItem(student+1, question+2);
+  QTableWidgetItem *i = getItem(student+1, 2);
   return i->text();
 }
 
-QString GradeWindow::getFeedback(size_t student, size_t question)
+QString GradeWindow::getGradeFeedback(size_t student, size_t question)
 {
-  QTableWidgetItem *i = getItem(student+1, question+2+Global::getNumQuestions());
+  QTableWidgetItem *i = getItem(student+1, question+RESERVED);
   return i->text();
 }
 
 QString GradeWindow::getMaximum(size_t question)
 {
-  QTableWidgetItem *i = getItem(0, question+2);
+  QTableWidgetItem *i = getItem(0, question+RESERVED);
   return i->text();
 }
 
@@ -135,21 +136,36 @@ QString GradeWindow::getStudentName(size_t student)
   return i->text();
 }
 
-void GradeWindow::setGrade(size_t student, size_t question, int in)
+QString GradeWindow::getTotalMaximum()
 {
-  QTableWidgetItem *i = getItem(student+1, question+2);
-  i->setText(getStrFromGrade(in));
+  QTableWidgetItem *i = getItem(0, 2);
+  return i->text();
 }
 
-void GradeWindow::setFeedback(size_t student, size_t question, const QString& in)
+void GradeWindow::setTotalGrade(size_t student, int total)
 {
-  QTableWidgetItem *i = getItem(student+1, question+2+Global::getNumQuestions());
-  i->setText(in);
+  QTableWidgetItem *i = getItem(student+1, 2);
+  i->setText(getStrFromGrade(total));
+}
+
+void GradeWindow::setGradeFeedback(size_t student, size_t question, int grade, const QString& feedback)
+{
+  QTableWidgetItem *i = getItem(student+1, question+RESERVED);
+  if (feedback.length() == 0)
+    i->setText(getStrFromGrade(grade));
+  else
+    i->setText(QString("%1=%2").arg(getStrFromGrade(grade)).arg(feedback));
 }
 
 void GradeWindow::setMaximum(size_t question, int in)
 {
-  QTableWidgetItem *i = getItem(0, question+2);
+  QTableWidgetItem *i = getItem(0, question+RESERVED);
+  i->setText(getStrFromGrade(in));
+}
+
+void GradeWindow::setTotalMaximum(int in)
+{
+  QTableWidgetItem *i = getItem(0, 2);
   i->setText(getStrFromGrade(in));
 }
 
@@ -168,5 +184,5 @@ void GradeWindow::setStudentName(size_t student, const QString& in)
 void GradeWindow::update(size_t curStudent, size_t curQuestion)
 {
   // Show which question is currently being edited
-  ui->tableWidget->setCurrentCell(curStudent+1, curQuestion+2);
+  ui->tableWidget->setCurrentCell(curStudent+1, curQuestion+RESERVED);
 }
