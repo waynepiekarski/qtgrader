@@ -7,6 +7,7 @@ GradeWindow::GradeWindow(QWidget *parent) :
   ui(new Ui::GradeWindow)
 {
   ui->setupUi(this);
+  connect(ui->tableWidget, SIGNAL(currentCellChanged(int, int, int, int)), this, SLOT(handleCellChanged(int,int,int,int)));
 
   ui->tableWidget->setColumnCount(2+2*Global::getNumQuestions());
   ui->tableWidget->setRowCount(Global::getNumStudents() + 1);
@@ -50,6 +51,41 @@ GradeWindow::GradeWindow(QWidget *parent) :
 GradeWindow::~GradeWindow()
 {
   delete ui;
+}
+
+void GradeWindow::handleCellChanged(int row, int col, int prevRow, int prevCol)
+{
+  // It appears to be difficult to prevent cell changes from occurring, this code doesn't work
+  /*
+  bool changed = false;
+  if (row < 1)
+  {
+    changed = true;
+    row = 1;
+  }
+  if (col < 2)
+  {
+    changed = true;
+    col = 2;
+  }
+  if (changed)
+    ui->tableWidget->setCurrentCell(row, col);
+  */
+
+  /* Some testing code to detect changes, but it is also affected by the other parts of the UI */
+  /*
+  if ((row >= 1) && (col >= 3))
+  {
+    GDEBUG("In active region");
+    size_t student = row - 1;
+    size_t q = col - 3;
+    if (q < Global::getNumQuestions())
+      GDEBUG("Student %zu, Question %zu", student+1, q+1);
+    else if (q < Global::getNumQuestions()*2)
+      GDEBUG("Student %zu, Feedback %zu", student+1, q-Global::getNumQuestions()+1);
+    GASSERT(q < 2*Global::getNumQuestions(), "Q value %zu is not valid", q);
+  }
+  */
 }
 
 void GradeWindow::handleGradeWindow()
@@ -127,7 +163,6 @@ void GradeWindow::setStudentName(size_t student, const QString& in)
 {
   QTableWidgetItem *i = getItem(student+1, 1);
   i->setText(in);
-  GDEBUG ("Changed student name for %zu to [%s]", student, qPrintable(in));
 }
 
 void GradeWindow::update(size_t curStudent, size_t curQuestion)

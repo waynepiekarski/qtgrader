@@ -33,6 +33,7 @@ public:
 
 public slots:
   void handleGradeWindow ();
+  void handleCellChanged (int row, int col, int prevRow, int prevCol);
 
 private:
   Ui::GradeWindow *ui;
