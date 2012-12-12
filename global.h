@@ -39,7 +39,11 @@ public:
     GASSERT(getNumPages() % getNumStudents() == 0, "%zu pages do not align with %zu students", getNumPages(), getNumStudents());
     return (getNumPages() / getNumStudents());
   }
-  static QPixmap& getQPixmap(size_t page) { return getPages()->getQPixmap(page); }
+  static QPixmap getQPixmap(size_t page)
+  {
+    return getPages()->getQPixmap(page);
+  }
+
 
   static void setGradeWindow(GradeWindow *in) { GASSERT(!_gw, "GradeWindow is already set"); _gw = in; }
   static GradeWindow* getGradeWindow() { GASSERT(_gw, "GradeWindow is not set"); return _gw; }

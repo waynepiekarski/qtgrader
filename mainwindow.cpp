@@ -243,7 +243,7 @@ void MainWindow::adjustPage(size_t page)
 {
   GASSERT(page < Global::getNumPages(), "Page %zu is larger than max page %zu", page, Global::getNumPages());
   curPage = page;
-  QPixmap &pix = Global::getQPixmap(page);
+  QPixmap pix = Global::getQPixmap(page);
   int width = zoomFactor * pix.size().width();
   int height = zoomFactor * pix.size().height();
   ui->image->setPixmap(pix.scaled(width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
