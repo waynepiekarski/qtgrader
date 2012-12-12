@@ -52,6 +52,7 @@ public slots:
 
 private:
   void handleScore(int);
+  void adjustAnswer(size_t question);
   void adjustZoomRelative(float factor);
   void adjustZoomFixed(float factor);
   void adjustQuestion(size_t question);

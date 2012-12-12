@@ -158,6 +158,7 @@ void MainWindow::handleEditQuestionScore(const QString& in)
     }
   }
   Global::db()->getStudent(curStudent()).setGrade(curQuestion, num);
+  adjustAnswer(curQuestion);
 }
 
 void MainWindow::handleScore(int in)
@@ -172,11 +173,13 @@ void MainWindow::handleScore(int in)
   GDEBUG ("Received score %d from function keys", in);
   Global::db()->getStudent(curStudent()).setGrade(curQuestion, in);
   ui->questionScore->setText(getStrFromGrade(in));
+  adjustAnswer(curQuestion);
 }
 
 void MainWindow::handleEditQuestionFeedback(const QString& in)
 {
   Global::db()->getStudent(curStudent()).setFeedback(curQuestion, in);
+  adjustAnswer(curQuestion);
 }
 
 void MainWindow::handleEditQuestionMaximum(const QString& in)
@@ -221,6 +224,7 @@ void MainWindow::handleEditQuestionMaximum(const QString& in)
   }
 
   Global::db()->setQuestionMaximum(curQuestion, num);
+  adjustAnswer(curQuestion);
 }
 
 size_t MainWindow::curStudent()
@@ -228,14 +232,23 @@ size_t MainWindow::curStudent()
   return curPage / Global::getNumPagesPerStudent();
 }
 
+void MainWindow::adjustAnswer(size_t question)
+{
+  Student &student = Global::db()->getStudent(curStudent());
+  ui->totalStats->setText(QString("Total %1 out of %2 points").arg(student.getTotal()).arg(Global::db()->getTotalMaximum()));
+  ui->remainingStats->setText(QString("Remaining items %1").arg(student.getUngraded()));
+}
+
 void MainWindow::adjustQuestion(size_t question)
 {
   GASSERT(question < Global::getNumQuestions(), "Question %zu is larger than max question %zu", question, Global::getNumQuestions());
   curQuestion = question;
+  Student &student = Global::db()->getStudent(curStudent());
   ui->questionStats->setText(QString("Question %1 of %2").arg(curQuestion+1).arg(Global::getNumQuestions()));
-  ui->questionFeedback->setText(Global::db()->getStudent(curStudent()).getFeedback(curQuestion));
+  ui->questionFeedback->setText(student.getFeedback(curQuestion));
   ui->questionMaximum->setText(getStrFromGrade(Global::db()->getQuestionMaximum(curQuestion)));
-  ui->questionScore->setText(getStrFromGrade(Global::db()->getStudent(curStudent()).getGrade(curQuestion)));
+  ui->questionScore->setText(getStrFromGrade(student.getGrade(curQuestion)));
+  adjustAnswer(question);
   Global::gw()->update(curStudent(), curQuestion);
 }
 

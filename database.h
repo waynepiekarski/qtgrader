@@ -64,6 +64,17 @@ public:
     return total;
   }
 
+  int getUngraded()
+  {
+    int ungraded = 0;
+    for (size_t q = 0; q < _values.size(); q++)
+    {
+      if (_values[q] < 0)
+        ungraded++;
+    }
+    return ungraded;
+  }
+
 private:
   std::vector<int> _values;
   std::vector<QString> _feedback;
@@ -78,18 +89,10 @@ public:
   { }
 
   size_t getSeq() { return _seq; }
-  int getGrade(size_t question)
-  {
-    return _grades.get(question);
-  }
-  const QString& getFeedback(size_t question)
-  {
-    return _grades.getFeedback(question);
-  }
-  int getTotal()
-  {
-    return _grades.getTotal();
-  }
+  int getGrade(size_t question) { return _grades.get(question); }
+  const QString& getFeedback(size_t question) { return _grades.getFeedback(question); }
+  int getTotal() { return _grades.getTotal(); }
+  int getUngraded() { return _grades.getUngraded(); }
 
   static GradeWindow *gw();
   const QString& getStudentName() { return _name; }
@@ -147,6 +150,7 @@ public:
   Student& getStudent(size_t elem) { return _students.get(elem); }
   int getQuestionMaximum(size_t question) { return _maxGrades.get(question); }
   void setQuestionMaximum(size_t question, int in, bool check = true) { if (check) { GASSERT(gw()->getMaximum(question)==getStrFromGrade(_maxGrades.get(question)), "GW mismatch"); gw()->setMaximum(question, in); } _maxGrades.set(question, in); }
+  int getTotalMaximum() { return _maxGrades.getTotal(); }
 
 private:
   GradeArray _maxGrades;
