@@ -147,13 +147,13 @@ void MainWindow::handleEditQuestionScore(const QString& in)
     if (!ok)
     {
       GINFODIALOG("Grade entered must be an integer");
-      ui->questionScore->setText("");
+      adjustQuestion(curQuestion); // Reset the field back to a proper value
       return;
     }
     if ((num < 0) || (num > Global::db()->getQuestionMaximum(curQuestion)))
     {
       GINFODIALOG("Grade entered is not within acceptable range");
-      ui->questionScore->setText("");
+      adjustQuestion(curQuestion); // Reset the field back to a proper value
       return;
     }
   }
@@ -197,13 +197,13 @@ void MainWindow::handleEditQuestionMaximum(const QString& in)
     if (!ok)
     {
       GINFODIALOG("Maximum question value provided must be an integer");
-      ui->questionMaximum->setText("");
+      adjustQuestion(curQuestion); // Reset the field back to a proper value
       return;
     }
     if (num < 0)
     {
       GINFODIALOG("Maximum question value provided is negative");
-      ui->questionMaximum->setText("");
+      adjustQuestion(curQuestion); // Reset the field back to a proper value
       return;
     }
   }
@@ -219,7 +219,7 @@ void MainWindow::handleEditQuestionMaximum(const QString& in)
   if (num < max)
   {
     GINFODIALOG("Maximum question value is less than existing grades");
-    ui->questionMaximum->setText("");
+    adjustQuestion(curQuestion); // Reset the field back to a proper value
     return;
   }
 
@@ -280,7 +280,7 @@ void MainWindow::handleSave()
   GDEBUG("Writing out main database to [%s]", qPrintable(savefile));
   Global::save(savefile);
   QDateTime current = QDateTime::currentDateTime();
-  QString bakfile (QDir(Global::getPath()).canonicalPath() + "/database-" + current.toString("yyyyMMdd-hhmmss") + ".bak");
+  QString bakfile (QDir(Global::getPath()).canonicalPath() + "/saved-" + current.toString("yyyyMMdd-hhmmss") + ".bak");
   GDEBUG("Writing out backup database to [%s]", qPrintable(bakfile));
   Global::save(bakfile);
 }
