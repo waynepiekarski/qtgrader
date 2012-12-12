@@ -30,8 +30,14 @@ void Global::save(QString filename)
   file << "TOTAL_STUDENTS=" << Global::db()->getNumStudents() << "\n";
   file << "SAVE_DATE_TIME=" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "\n";
   file << "NUM_IMAGES=" << Global::getPages()->size() << "\n";
+  if (Global::getPages()->size() != Global::db()->getNumStudents() * _numPagesPerStudent)
+  {
+    GDEBUG("Detected mismatch in number of pages %zu, number of students %zu, and number of pages per student %zu",
+           Global::getPages()->size(), Global::db()->getNumStudents(), _numPagesPerStudent);
+    GINFODIALOG("Detected page mismatch during save, but will continue anyway");
+  }
 
-  file << "-1\tMAX\tMAX";
+  file << "-1\tMAX\tMAX\t" << Global::db()->getTotalMaximum();
   for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
     file << "\t" << Global::db()->getQuestionMaximum(q);
   for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
@@ -42,6 +48,7 @@ void Global::save(QString filename)
   {
     Student& student = Global::db()->getStudent(s);
     file << s << "\t" << student.getStudentId() << "\t" << student.getStudentName();
+    file << "\t" << student.getTotal();
     for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
       file << "\t" << student.getGrade(q);
     for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
@@ -140,7 +147,7 @@ void Global::initDatabase(QString filename)
     GEXITDIALOG(QString("Found different number of images than was used for the save"));
 
   // Now populate the database. Each entry is of the following form:
-  // IDNUM,STUDENTID,STUDENTNAME,Q0,Q1,..,QN,Feed0,Feed1,..,FeedN
+  // IDNUM,STUDENTID,STUDENTNAME,TOTAL,Q0,Q1,..,QN,Feed0,Feed1,..,FeedN
   // All fields will contain something except for Feed0..FeedN
   for (int student = -1; student < (int)numStudents; student++)
   {
@@ -148,9 +155,9 @@ void Global::initDatabase(QString filename)
       GEXITDIALOG(QString("Encountered end of file reading student %1 of %2").arg(student+1).arg(numStudents));
     QString in = file.readLine();
     QStringList fields = in.split("\t");
-    if (fields.size() != (2*(int)numQuestions + 3))
-      GEXITDIALOG(QString("Found only %1 columns in [%2] for student %3 of %4 when expected 2x%5+3 columns").arg(fields.size()).arg(in).arg(student+1).arg(numStudents).arg(numQuestions));
-    for (size_t col = 3; col < numQuestions+3; col++) // Do not search student id/name, or any feedback, since these can be empty
+    if (fields.size() != (2*(int)numQuestions + 4))
+      GEXITDIALOG(QString("Found only %1 columns in [%2] for student %3 of %4 when expected 2x%5+4 columns").arg(fields.size()).arg(in).arg(student+1).arg(numStudents).arg(numQuestions));
+    for (size_t col = 4; col < numQuestions+4; col++) // Do not search student id/name, or any feedback, since these can be empty
       if (fields.at(col) == "")
         GEXITDIALOG(QString("Found empty column %1 for student %3 of %4").arg(col+1).arg(student+1).arg(numStudents));
     bool ok;
@@ -169,6 +176,9 @@ void Global::initDatabase(QString filename)
           GEXITDIALOG(QString("Score value [%1] for question %2 was not valid for maximum values").arg(fields.at(q+3)).arg(q+1));
         Global::db()->setQuestionMaximum(q, score, false);
       }
+      int total = fields.at(3).toInt(&ok);
+      if ((!ok) || (total != Global::db()->getTotalMaximum()))
+        GEXITDIALOG(QString("Maximum total in file [%1] did not match calculated maximum total %2").arg(fields.at(3)).arg(Global::db()->getTotalMaximum()));
     }
     else
     {
@@ -184,6 +194,9 @@ void Global::initDatabase(QString filename)
       }
       for (size_t q = 0; q < numQuestions; q++)
         entry.setFeedback(q, fields.at(q + 3 + numQuestions), false);
+      int total = fields.at(3).toInt(&ok);
+      if ((!ok) || (total != entry.getTotal()))
+        GEXITDIALOG(QString("Total in file [%1] did not match calculated total %2").arg(fields.at(3)).arg(entry.getTotal()));
     }
   }
 }
