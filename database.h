@@ -53,6 +53,17 @@ public:
 
   size_t size() { return _values.size(); }
 
+  int getTotal()
+  {
+    int total = 0;
+    for (size_t q = 0; q < _values.size(); q++)
+    {
+      if (_values[q] > 0)
+        total += _values[q];
+    }
+    return total;
+  }
+
 private:
   std::vector<int> _values;
   std::vector<QString> _feedback;
@@ -74,6 +85,10 @@ public:
   const QString& getFeedback(size_t question)
   {
     return _grades.getFeedback(question);
+  }
+  int getTotal()
+  {
+    return _grades.getTotal();
   }
 
   static GradeWindow *gw();
