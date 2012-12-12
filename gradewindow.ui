@@ -85,7 +85,7 @@
     <string>Save</string>
    </property>
    <property name="shortcut">
-    <string>Meta+S, Ctrl+S</string>
+    <string>Meta+S</string>
    </property>
   </action>
   <action name="actionQuit">
