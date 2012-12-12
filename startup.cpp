@@ -15,10 +15,10 @@ StartupDialog::StartupDialog(QWidget *parent) :
   ui->setupUi(this);
 
   /* Hard code defaults for new project debugging */
-  ui->imageDirectory->setText("../../../../scans");
+  ui->imageDirectory->setText(QDir::homePath() + "/Desktop/qtgrader-scans");
   ui->existingProject->setText("");
-  ui->questionsPerStudent->setText("9");
-  ui->pagesPerStudent->setText("4");
+  ui->questionsPerStudent->setText("30");
+  ui->pagesPerStudent->setText("12");
 
   /* Set up page change buttons */
   connect(ui->selectImageDirectory, SIGNAL(clicked()), this, SLOT(handleSelectImageDirectory()));
@@ -89,8 +89,7 @@ StartupDialog::~StartupDialog()
 
 void StartupDialog::handleSelectImageDirectory()
 {
-  GDEBUG("Dir = [%s]", qPrintable(QDir::home().canonicalPath()));
-  QString startDir = QDir::home().canonicalPath();
+  QString startDir = QDir::homePath();
   if (ui->imageDirectory->text().length() != 0)
     startDir = ui->imageDirectory->text();
   QString dirName = QFileDialog::getExistingDirectory(this, tr("Image Scan Directory"), startDir);
