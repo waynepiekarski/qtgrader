@@ -38,6 +38,13 @@ void Global::save(QString filename)
     GINFODIALOG("Detected page mismatch during save, but will continue anyway");
   }
 
+  file << "-2\tPAGE\tPAGE\t" << -1;
+  for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
+    file << "\t" << Global::db()->getQuestionPage(q);
+  for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
+    file << "\t" << "NF"; // Emit empty feedback columns
+  file << "\n";
+
   file << "-1\tMAX\tMAX\t" << Global::db()->getTotalMaximum();
   for (size_t q = 0; q < Global::db()->getNumQuestions(); q++)
     file << "\t" << Global::db()->getQuestionMaximum(q);
@@ -131,6 +138,10 @@ void Global::initDatabase(QString filename)
   // Initialize the database since we know all the dimensions now
   initDatabase(numStudents, numQuestions, numPagesPerStudent);
 
+  // Check the version is what we are expecting
+  if (version != DB_VERSION)
+    GEXITDIALOG(QString("Found version [%1] when only version [%2] is supported").arg(version).arg(DB_VERSION));
+
   // Image paths should always be . right now, nothing else is supported
   if (image_path != ".")
     GEXITDIALOG("Non-empty path found for image loading");
@@ -150,7 +161,7 @@ void Global::initDatabase(QString filename)
   // Now populate the database. Each entry is of the following form:
   // IDNUM,STUDENTID,STUDENTNAME,TOTAL,Q0,Q1,..,QN,Feed0,Feed1,..,FeedN
   // All fields will contain something except for Feed0..FeedN
-  for (int student = -1; student < (int)numStudents; student++)
+  for (int student = -2; student < (int)numStudents; student++)
   {
     if (file.atEnd())
       GEXITDIALOG(QString("Encountered end of file reading student %1 of %2").arg(student+1).arg(numStudents));
@@ -162,18 +173,35 @@ void Global::initDatabase(QString filename)
       if (fields.at(col) == "")
         GEXITDIALOG(QString("Found empty column %1 for student %3 of %4").arg(col+1).arg(student+1).arg(numStudents));
     bool ok;
-    int num = fields.at(0).toInt(&ok);
-    if ((!ok) || (num != student))
-      GEXITDIALOG(QString("Expected row number %1 but found [%2] instead for student %3 of %4").arg(student).arg(fields.at(0).arg(student+1).arg(numStudents)));
+    {
+      int num = fields.at(0).toInt(&ok);
+      if ((!ok) || (num != student))
+        GEXITDIALOG(QString("Expected row number %1 but found [%2] instead for student %3 of %4").arg(student).arg(fields.at(0)).arg(student+1).arg(numStudents));
+    }
 
-    if (student == -1)
+    if (student == -2)
+    {
+      if ((fields.at(1) != "PAGE") && (fields.at(2) != "PAGE"))
+        GEXITDIALOG(QString("Expected PAGE headers for first row of data, but found [%1] [%2] instead").arg(fields.at(1).arg(fields.at(2))));
+      for (size_t q = 0; q < numQuestions; q++)
+      {
+        int page = fields.at(q+4).toInt(&ok);
+        if ((!ok) || (page < -1))
+          GEXITDIALOG(QString("Page value [%1] for question %2 was not valid for maximum values").arg(fields.at(q+4)).arg(q+1));
+        Global::db()->setQuestionPage(q, page, false);
+      }
+      int total = fields.at(3).toInt(&ok);
+      if ((!ok) || (total != -1))
+        GEXITDIALOG(QString("Page total in file [%1] was not -1").arg(fields.at(3)));
+    }
+    else if (student == -1)
     {
       if ((fields.at(1) != "MAX") && (fields.at(2) != "MAX"))
-        GEXITDIALOG(QString("Expected MAXIMUM headers for first row of data, but found [%1] [%2] instead").arg(fields.at(1).arg(fields.at(2))));
+        GEXITDIALOG(QString("Expected MAX headers for first row of data, but found [%1] [%2] instead").arg(fields.at(1).arg(fields.at(2))));
       for (size_t q = 0; q < numQuestions; q++)
       {
         int score = fields.at(q+4).toInt(&ok);
-        if ((!ok) || (num < -1))
+        if ((!ok) || (score < -1))
           GEXITDIALOG(QString("Score value [%1] for question %2 was not valid for maximum values").arg(fields.at(q+4)).arg(q+1));
         Global::db()->setQuestionMaximum(q, score, false);
       }

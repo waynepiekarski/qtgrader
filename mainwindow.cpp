@@ -53,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->questionScore,    SIGNAL(textEdited(const QString&)), this, SLOT(handleEditQuestionScore(const QString&)));
   connect(ui->questionFeedback, SIGNAL(textEdited(const QString&)), this, SLOT(handleEditQuestionFeedback(const QString&)));
   connect(ui->questionMaximum,  SIGNAL(textEdited(const QString&)), this, SLOT(handleEditQuestionMaximum(const QString&)));
+  connect(ui->questionPage,     SIGNAL(textEdited(const QString&)), this, SLOT(handleEditQuestionPage(const QString&)));
   connect(ui->action0_Points,   SIGNAL(triggered()), this, SLOT(handleScore0()));
   connect(ui->action1_Point,    SIGNAL(triggered()), this, SLOT(handleScore1()));
   connect(ui->action2_Points,   SIGNAL(triggered()), this, SLOT(handleScore2()));
@@ -166,6 +167,35 @@ void MainWindow::handleEditQuestionScore(const QString& in)
   adjustAnswer(curQuestion);
 }
 
+void MainWindow::handleEditQuestionPage(const QString& in)
+{
+  bool ok;
+  int num;
+  if (in == "")
+  {
+    // Convert empty strings into -1 marker to indicate no page number entered
+    num = -1;
+  }
+  else
+  {
+    num = in.toInt(&ok);
+    if (!ok)
+    {
+      GINFODIALOG("Page entered must be an integer");
+      adjustQuestion(curQuestion); // Reset the field back to a proper value
+      return;
+    }
+    if ((num < 0) || (num > (int)Global::getNumPages()))
+    {
+      GINFODIALOG("Page entered is not within acceptable range");
+      adjustQuestion(curQuestion); // Reset the field back to a proper value
+      return;
+    }
+  }
+  Global::db()->setQuestionPage(curQuestion, num);
+}
+
+
 void MainWindow::handleScore(int in)
 {
   if (in > Global::db()->getQuestionMaximum(curQuestion))
@@ -253,6 +283,7 @@ void MainWindow::adjustQuestion(size_t question)
   ui->questionFeedback->setText(student.getFeedback(curQuestion));
   ui->questionMaximum->setText(getStrFromGrade(Global::db()->getQuestionMaximum(curQuestion)));
   ui->questionScore->setText(getStrFromGrade(student.getGrade(curQuestion)));
+  ui->questionPage->setText(getStrFromGrade(Global::db()->getQuestionPage(curQuestion)));
   adjustAnswer(question);
   Global::gw()->update(curStudent(), curQuestion);
 }

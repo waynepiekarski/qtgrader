@@ -40,6 +40,7 @@ public slots:
   void handleEditQuestionScore(const QString&);
   void handleEditQuestionFeedback(const QString&);
   void handleEditQuestionMaximum(const QString&);
+  void handleEditQuestionPage(const QString&);
   void handleScore0() { handleScore(0); }
   void handleScore1() { handleScore(1); }
   void handleScore2() { handleScore(2); }

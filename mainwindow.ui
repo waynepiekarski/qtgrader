@@ -37,7 +37,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>365</width>
+         <width>346</width>
          <height>472</height>
         </rect>
        </property>
@@ -478,6 +478,26 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Q Page</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="questionPage">
+            <property name="inputMethodHints">
+             <set>Qt::ImhDigitsOnly</set>
+            </property>
+            <property name="text">
+             <string>##</string>
+            </property>
+            <property name="maxLength">
+             <number>2</number>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -520,7 +540,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>602</width>
+             <width>621</width>
              <height>204</height>
             </rect>
            </property>

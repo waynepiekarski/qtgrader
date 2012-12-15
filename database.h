@@ -140,6 +140,7 @@ class Database
 private:
   Database(size_t numStudents, size_t numQuestions) :
     _maxGrades(numQuestions),
+    _questionPage(numQuestions),
     _students(numStudents, numQuestions)
   { }
 
@@ -151,8 +152,11 @@ public:
   int getQuestionMaximum(size_t question) { return _maxGrades.get(question); }
   void setQuestionMaximum(size_t question, int in, bool check = true) { if (check) { GASSERT(gw()->getMaximum(question)==getStrFromGrade(_maxGrades.get(question)), "GW mismatch"); gw()->setMaximum(question, in); } _maxGrades.set(question, in); if(check) gw()->setTotalMaximum(_maxGrades.getTotal()); }
   int getTotalMaximum() { return _maxGrades.getTotal(); }
+  int getQuestionPage(size_t question) { return _questionPage.get(question); }
+  void setQuestionPage(size_t question, int in, bool check = true) { if (check) { GASSERT(gw()->getQuestionPage(question)==getStrFromGrade(_questionPage.get(question)), "GW mismatch"); gw()->setQuestionPage(question, in); } _questionPage.set(question, in); }
 
 private:
   GradeArray _maxGrades;
+  GradeArray _questionPage;
   StudentArray _students;
 };

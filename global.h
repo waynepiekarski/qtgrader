@@ -7,7 +7,7 @@ class MainWindow;
 class GradeWindow;
 class Pages;
 
-#define DB_VERSION "DB v1.0"
+#define DB_VERSION "DB v2.0"
 
 class Global
 {
