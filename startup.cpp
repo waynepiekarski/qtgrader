@@ -7,6 +7,9 @@
 #include "pages.h"
 #include "debug.h"
 
+// #define DEBUG_EXISTING_PROJECT QString(QDir::homePath() + "/Desktop/qtgrader-scans" + "/CHEM12A-21550-Fall-2012-Exam/database.qtg")
+// #define DEBUG_EXISTING_IMAGES  QString(QDir::homePath() + "/Desktop/qtgrader-scans" + "/CHEM12A-21550-Fall-2012-Exam")
+
 StartupDialog::StartupDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::StartupDialog)
@@ -20,11 +23,25 @@ StartupDialog::StartupDialog(QWidget *parent) :
   ui->questionsPerStudent->setText("30");
   ui->pagesPerStudent->setText("12");
 
+  /* Implement debugging if desired */
+#if defined(DEBUG_EXISTING_PROJECT)
+#warning Hard coded existing project
+#define SKIP_STARTUP_DIALOG
+  ui->existingProject->setText(DEBUG_EXISTING_PROJECT);
+  ui->imageDirectory->setText("");
+#elif defined(DEBUG_EXISTING_IMAGES)
+#warning Hard coded existing scans
+#define SKIP_STARTUP_DIALOG
+  ui->existingProject->setText("");
+  ui->imageDirectory->setText(DEBUG_EXISTING_IMAGES);
+#endif
+
   /* Set up page change buttons */
   connect(ui->selectImageDirectory, SIGNAL(clicked()), this, SLOT(handleSelectImageDirectory()));
   connect(ui->loadExistingProject, SIGNAL(clicked()), this, SLOT(handleLoadExistingProject()));
 
   /* Execute the dialog to get the result */
+#ifndef SKIP_STARTUP_DIALOG
   switch(exec())
     {
     case QDialog::Accepted:
@@ -38,6 +55,7 @@ StartupDialog::StartupDialog(QWidget *parent) :
       GFATAL ("Unknown exec() return value");
       break;
     }
+#endif // SKIP_STARTUP_DIALOG
 
   /* Decide what to do with the result */
   if (ui->imageDirectory->text().length() == 0)
