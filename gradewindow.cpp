@@ -1,5 +1,7 @@
 #include "gradewindow.h"
 #include "ui_gradewindow.h"
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
 #include "global.h"
 
 #define RESERVED 3
@@ -9,6 +11,7 @@ GradeWindow::GradeWindow(QWidget *parent) :
   ui(new Ui::GradeWindow)
 {
   ui->setupUi(this);
+  handleGradeWindow(true); // Make sure the table widget initially appears in the main window
   connect(ui->tableWidget, SIGNAL(currentCellChanged(int, int, int, int)), this, SLOT(handleCellChanged(int,int,int,int)));
   connect(ui->actionResizeContents, SIGNAL(triggered()), this, SLOT(handleResizeContents()));
   connect(ui->actionResizeLarge, SIGNAL(triggered()), this, SLOT(handleResizeLarge()));
@@ -83,6 +86,10 @@ GradeWindow::~GradeWindow()
 
 void GradeWindow::handleCellChanged(int row, int col, int prevRow, int prevCol)
 {
+  Q_UNUSED(row);
+  Q_UNUSED(col);
+  Q_UNUSED(prevRow);
+  Q_UNUSED(prevCol);
   // It appears to be difficult to prevent cell changes from occurring, this code doesn't work
   /*
   bool changed = false;
@@ -113,12 +120,26 @@ void GradeWindow::handleCellChanged(int row, int col, int prevRow, int prevCol)
   */
 }
 
-void GradeWindow::handleGradeWindow()
+void GradeWindow::closeEvent(QCloseEvent *event)
 {
-  if (isVisible())
-    hide();
+  handleGradeWindow(true);
+}
+
+void GradeWindow::handleGradeWindow(bool init)
+{
+  // During initialization, we need to put the table widget inside the main window
+  if (isVisible() || init)
+  {
+    ui->tableWidget->setParent(Global::getMainWindow()->getUI()->gradeWidget);
+    Global::getMainWindow()->getUI()->gridLayout->addWidget(ui->tableWidget, 0, 0, 1, 1);
+    hide(); // Hide the pop up window
+  }
   else
-    show();
+  {
+    ui->tableWidget->setParent(ui->scrollAreaWidgetContents);
+    ui->gridLayout->addWidget(ui->tableWidget, 0, 0, 1, 1);
+    show(); // Show the pop up window to hold this widget
+  }
 }
 
 QTableWidgetItem* GradeWindow::getItem(int row, int col)

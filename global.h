@@ -3,6 +3,7 @@
 #include "database.h"
 #include "debug.h"
 
+class MainWindow;
 class GradeWindow;
 class Pages;
 
@@ -44,12 +45,16 @@ public:
     return getPages()->getQPixmap(page);
   }
 
-
   static void setGradeWindow(GradeWindow *in) { GASSERT(!_gw, "GradeWindow is already set"); _gw = in; }
   static GradeWindow* getGradeWindow() { GASSERT(_gw, "GradeWindow is not set"); return _gw; }
   static GradeWindow* gw() { return getGradeWindow(); }
 
+  static void setMainWindow(MainWindow *in) { GASSERT(!_mw, "MainWindow is already set"); _mw = in; }
+  static MainWindow* getMainWindow() { GASSERT(_mw, "MainWindow is not set"); return _mw; }
+  static MainWindow* mw() { return getMainWindow(); }
+
 private:
+  static MainWindow *_mw;
   static GradeWindow *_gw;
   static Database *_db;
   static Pages *_pages;

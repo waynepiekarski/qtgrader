@@ -17,6 +17,7 @@ public:
   ~GradeWindow();
   Ui::GradeWindow* getUI() { return ui; }
   void update(size_t curStudent, size_t curQuestion);
+  void closeEvent(QCloseEvent *event);
 
   QTableWidgetItem* getItem(int row, int col);
   QString getTotalGrade(size_t student);
@@ -34,7 +35,7 @@ public:
   void setStudentName(size_t student, const QString& in);
 
 public slots:
-  void handleGradeWindow ();
+  void handleGradeWindow (bool init = false);
   void handleCellChanged (int row, int col, int prevRow, int prevCol);
   void handleResizeContents();
   void handleResizeSmall();

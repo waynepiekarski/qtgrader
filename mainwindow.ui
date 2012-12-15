@@ -506,66 +506,25 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>400</width>
-            <height>16777215</height>
-           </size>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
           </property>
           <property name="widgetResizable">
            <bool>true</bool>
           </property>
-          <widget class="QWidget" name="scrollAreaWidgetContents_2">
+          <widget class="QWidget" name="gradeWidget">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>398</width>
+             <width>602</width>
              <height>204</height>
             </rect>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <item>
-             <widget class="QTableWidget" name="tableWidget">
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <row>
-               <property name="text">
-                <string>Q1</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>Q2</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>Q3</string>
-               </property>
-              </row>
-              <column>
-               <property name="text">
-                <string>Maximum</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Score</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Comments</string>
-               </property>
-              </column>
-             </widget>
-            </item>
-           </layout>
+           <layout class="QGridLayout" name="gridLayout"/>
           </widget>
          </widget>
         </item>
@@ -610,6 +569,9 @@
      <string>Window</string>
     </property>
     <addaction name="actionGradeWindow"/>
+    <addaction name="actionResizeContents"/>
+    <addaction name="actionResizeSmall"/>
+    <addaction name="actionResizeLarge"/>
    </widget>
    <widget class="QMenu" name="menuEntry">
     <property name="title">
@@ -767,6 +729,21 @@
    </property>
    <property name="shortcut">
     <string>Meta+Del</string>
+   </property>
+  </action>
+  <action name="actionResizeContents">
+   <property name="text">
+    <string>Resize To Contents</string>
+   </property>
+  </action>
+  <action name="actionResizeSmall">
+   <property name="text">
+    <string>Resize Small</string>
+   </property>
+  </action>
+  <action name="actionResizeLarge">
+   <property name="text">
+    <string>Resize Large</string>
    </property>
   </action>
  </widget>

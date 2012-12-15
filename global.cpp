@@ -9,6 +9,7 @@
 #include <QTextStream>
 
 GradeWindow* Global::_gw = NULL;
+MainWindow* Global::_mw = NULL;
 Database* Global::_db = NULL;
 Pages* Global::_pages = NULL;
 size_t Global::_numPagesPerStudent = 0;

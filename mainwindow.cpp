@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
   /* Set up the Qt user interface */
   ui->setupUi(this);
+  Global::setMainWindow(this);
 
   /* Set up the GradeWindow and also fill the table with initial values from the database */
   Global::setGradeWindow(new GradeWindow);
@@ -39,8 +40,12 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->actionPageNext, SIGNAL(triggered()), this, SLOT(handlePageNext()));
   connect(ui->actionStudentPrev, SIGNAL(triggered()), this, SLOT(handleStudentPrev()));
   connect(ui->actionStudentNext, SIGNAL(triggered()), this, SLOT(handleStudentNext()));
+
   connect(ui->actionGradeWindow, SIGNAL(triggered()), Global::gw(), SLOT(handleGradeWindow()));
   connect(Global::gw()->getUI()->actionGradeWindow, SIGNAL(triggered()), Global::gw(), SLOT(handleGradeWindow()));
+  connect(ui->actionResizeContents, SIGNAL(triggered()), Global::gw(), SLOT(handleResizeContents()));
+  connect(ui->actionResizeLarge, SIGNAL(triggered()), Global::gw(), SLOT(handleResizeLarge()));
+  connect(ui->actionResizeSmall, SIGNAL(triggered()), Global::gw(), SLOT(handleResizeSmall()));
 
   /* Detect user input in data entry fields */
   connect(ui->studentId,        SIGNAL(textEdited(const QString&)), this, SLOT(handleEditStudentId(const QString&)));
