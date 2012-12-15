@@ -374,6 +374,9 @@
           </item>
           <item>
            <widget class="QLineEdit" name="studentId">
+            <property name="inputMethodHints">
+             <set>Qt::ImhDigitsOnly</set>
+            </property>
             <property name="text">
              <string>studentId</string>
             </property>
@@ -568,6 +571,7 @@
      <string>File</string>
     </property>
     <addaction name="actionSave"/>
+    <addaction name="actionGenPDFs"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -764,6 +768,14 @@
   <action name="actionResizeLarge">
    <property name="text">
     <string>Resize Large</string>
+   </property>
+  </action>
+  <action name="actionGenPDFs">
+   <property name="text">
+    <string>Generate PDFs</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+G</string>
    </property>
   </action>
  </widget>

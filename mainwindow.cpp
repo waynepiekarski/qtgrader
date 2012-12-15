@@ -34,7 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->zoomOne,    SIGNAL(clicked()), this, SLOT(handleZoomOne()));
 
   /* Set up various actions */
-  connect(ui->actionSave ,    SIGNAL(triggered()), this, SLOT(handleSave()));
+  connect(ui->actionSave,    SIGNAL(triggered()), this, SLOT(handleSave()));
+  connect(ui->actionGenPDFs, SIGNAL(triggered()), this, SLOT(handleGeneratePDFs()));
   connect(Global::gw()->getUI()->actionSave, SIGNAL(triggered()), this, SLOT(handleSave()));
   connect(ui->actionPagePrev, SIGNAL(triggered()), this, SLOT(handlePagePrev()));
   connect(ui->actionPageNext, SIGNAL(triggered()), this, SLOT(handlePageNext()));
@@ -319,6 +320,13 @@ void MainWindow::handleSave()
   QString bakfile (QDir(Global::getPath()).canonicalPath() + "/saved-" + current.toString("yyyyMMdd-hhmmss") + ".bak");
   GDEBUG("Writing out backup database to [%s]", qPrintable(bakfile));
   Global::save(bakfile);
+}
+
+void MainWindow::handleGeneratePDFs()
+{
+  QString savedir (QDir(Global::getPath()).canonicalPath());
+  GDEBUG("Writing out PDFs to [%s]", qPrintable(savedir));
+  Global::generatePDFs(savedir);
 }
 
 void MainWindow::adjustZoomRelative(float factor)

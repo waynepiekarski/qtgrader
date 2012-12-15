@@ -20,6 +20,7 @@ public:
   }
   static void initDatabase(QString filename);
   static void save(QString filename);
+  static void generatePDFs(QString dirname);
 
   static void initPages(QString path)
   {

@@ -7,12 +7,55 @@
 #include <QDateTime>
 #include <QFile>
 #include <QTextStream>
+#include <QPrinter>
+#include <QPainter>
 
 GradeWindow* Global::_gw = NULL;
 MainWindow* Global::_mw = NULL;
 Database* Global::_db = NULL;
 Pages* Global::_pages = NULL;
 size_t Global::_numPagesPerStudent = 0;
+
+void Global::generatePDFs(QString dirname)
+{
+  // for (size_t s = 0; s < getNumStudents(); s++)
+  for (size_t s = 0; s < 2; s++)
+  {
+    Student& student = db()->getStudent(s);
+    GASSERT(!student.getStudentId().contains(" "), "Student ID [%s] should not contain spaces", qPrintable(student.getStudentId()));
+    QString pdfname (dirname + "/report-" + student.getStudentId() + ".pdf");
+    GDEBUG ("Generating PDF [%s] for student [%s]", qPrintable(pdfname), qPrintable(student.getStudentId()));
+
+    QPrinter printer (QPrinter::HighResolution);
+    printer.setOutputFormat (QPrinter::PdfFormat);
+    printer.setOutputFileName (pdfname);
+    printer.setPageSize(QPrinter::Letter);
+    printer.setResolution(150); // DPI for the printing
+
+    QPainter painter;
+    if (!painter.begin(&printer)) // Check for errors here
+      GFATAL("Failed to do QPainter begin()");
+
+    for (size_t p = 0; p < getNumPagesPerStudent(); p++)
+    {
+      GDEBUG ("Printing page %d of %d for report [%s]", p+1, getNumPagesPerStudent(), qPrintable(pdfname));
+      QPixmap pix = getPages()->getQPixmap(p);
+      // Scale the pixmap to fit the printer
+      pix = pix.scaled(printer.pageRect().width(), printer.pageRect().height(), Qt::KeepAspectRatio);
+      // Draw the pixmap to the printer
+      painter.drawPixmap (0, 0, pix);
+      // Add some text annotations
+      painter.drawText (10, 10, "Hello world");
+
+      // Insert a new page except on the last one
+      if (p < getNumPagesPerStudent()-1)
+        if (!printer.newPage()) // Check for errors here
+          GFATAL("Failed to do newPage() call");
+    }
+
+    painter.end();
+  }
+}
 
 void Global::save(QString filename)
 {

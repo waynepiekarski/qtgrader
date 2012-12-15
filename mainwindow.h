@@ -34,6 +34,7 @@ public slots:
   void handleZoomHeight();
   void handleZoomOne();
   void handleSave();
+  void handleGeneratePDFs();
   void handleQuit();
   void handleEditStudentId(const QString&);
   void handleEditStudentName(const QString&);
