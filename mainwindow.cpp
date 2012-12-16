@@ -186,7 +186,7 @@ void MainWindow::handleEditQuestionPage(const QString& in)
       adjustQuestion(curQuestion); // Reset the field back to a proper value
       return;
     }
-    if ((num < 0) || (num > (int)Global::getNumPages()))
+    if ((num <= 0) || (num > (int)Global::getNumPages())) // 0 is not allowed here either!
     {
       GINFODIALOG("Page entered is not within acceptable range");
       adjustQuestion(curQuestion); // Reset the field back to a proper value
