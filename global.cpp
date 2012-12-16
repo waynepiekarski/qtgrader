@@ -31,21 +31,55 @@ void Global::generatePDFs(QString dirname)
     printer.setOutputFileName (pdfname);
     printer.setPageSize(QPrinter::Letter);
     printer.setResolution(150); // DPI for the printing
+    printer.setColorMode(QPrinter::GrayScale);
 
     QPainter painter;
     if (!painter.begin(&printer)) // Check for errors here
       GFATAL("Failed to do QPainter begin()");
 
+    // Can use this code to change the text color, but causes larger PDF files
+    // since it must use a color output format instead.
+    //QPen penColor(QColor("#000090")); // Change text to dark blue
+    //painter.setPen(penColor);
+
     for (size_t p = 0; p < getNumPagesPerStudent(); p++)
     {
-      GDEBUG ("Printing page %d of %d for report [%s]", p+1, getNumPagesPerStudent(), qPrintable(pdfname));
+      GDEBUG ("Printing page %zu of %zu for report [%s]", p+1, getNumPagesPerStudent(), qPrintable(pdfname));
       QPixmap pix = getPages()->getQPixmap(p);
       // Scale the pixmap to fit the printer
       pix = pix.scaled(printer.pageRect().width(), printer.pageRect().height(), Qt::KeepAspectRatio);
       // Draw the pixmap to the printer
       painter.drawPixmap (0, 0, pix);
-      // Add some text annotations
-      painter.drawText (10, 10, "Hello world");
+
+      // Print out the student details at the top of the page
+      QString title = QString("Name: %1  ID: %2  Page: %3 of %4").arg(student.getStudentName()).arg(student.getStudentId()).arg(p+1).arg(getNumPagesPerStudent());
+      painter.drawText(0, 0, title);
+
+      // Build up a results string to print onto the page
+      QString grades ("Results:");
+      for (size_t q = 0; q < getNumQuestions(); q++)
+      {
+        // See if the question is on this page
+        GASSERT(Global::db()->getQuestionPage(q) != 0, "Cannot have page 0 assigned for question %zu", q);
+        if (Global::db()->getQuestionPage(q) < 0)
+        {
+          GINFODIALOG(QString("Cannot render PDF because question %1 does not have a page assigned").arg(q+1));
+          return;
+        }
+        if (Global::db()->getQuestionPage(q) == ((int)p+1))
+        {
+          if (student.getGrade(q) < 0)
+          {
+            GINFODIALOG(QString("Cannot render PDF for student [%1] because question %2 has no grade assigned").arg(student.getStudentName()).arg(q+1));
+            return;
+          }
+          grades += QString("  Q%1 = %2/%3").arg(q+1).arg(student.getGrade(q)).arg(Global::db()->getQuestionMaximum(q));
+          if (student.getFeedback(q) != "")
+            grades += QString(" [%1]").arg(student.getFeedback(q));
+        }
+      }
+      // Wrap the text to fit a bounding box that is the width of the page, align to the bottom of the page
+      painter.drawText(0, 30, printer.pageRect().width(), printer.pageRect().height()-30, Qt::TextWordWrap | Qt::AlignBottom, grades);
 
       // Insert a new page except on the last one
       if (p < getNumPagesPerStudent()-1)
