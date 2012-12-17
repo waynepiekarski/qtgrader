@@ -23,6 +23,8 @@ size_t Global::_numPagesPerStudent = 0;
 
 void Global::generatePDFs(QString dirname)
 {
+  size_t pageCount = 0;
+
   for (size_t s = 0; s < getNumStudents(); s++)
   {
     Student& student = db()->getStudent(s);
@@ -48,8 +50,10 @@ void Global::generatePDFs(QString dirname)
 
     for (size_t p = 0; p < getNumPagesPerStudent(); p++)
     {
-      Global::getStatusLabel()->setText(QString("Generating PDF for student %1 of %2, page %3 of %4 (%5 percent)").
-                                        arg(s+1).arg(getNumStudents()).arg(p+1).arg(getNumPagesPerStudent()).arg(rint(0.5+100.0*s*p/(1.0*getNumPages()))));
+      pageCount++;
+      // Add spaces at the end so the widget can resize into the reserved space without a re-layout
+      Global::getStatusLabel()->setText(QString("Generating PDF for student %1 of %2, page %3 of %4 (%5 percent)     ").
+                                        arg(s+1).arg(getNumStudents()).arg(p+1).arg(getNumPagesPerStudent()).arg(rint(0.5+100.0*pageCount/(1.0*getNumPages()))));
       // Flush out Qt events so that the UI update occurs inside this handler
       Global::getQApplication()->processEvents();
 
