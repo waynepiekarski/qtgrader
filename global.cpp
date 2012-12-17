@@ -4,22 +4,26 @@
 #include "global.h"
 #include "debug.h"
 
-#include <QDateTime>
-#include <QFile>
+#include <QApplication>
 #include <QTextStream>
+#include <QDateTime>
 #include <QPrinter>
 #include <QPainter>
+#include <QFile>
+#include <QLabel>
+#include <math.h>
 
 GradeWindow* Global::_gw = NULL;
 MainWindow* Global::_mw = NULL;
+QApplication* Global::_qapp = NULL;
+QLabel* Global::_statusLabel = NULL;
 Database* Global::_db = NULL;
 Pages* Global::_pages = NULL;
 size_t Global::_numPagesPerStudent = 0;
 
 void Global::generatePDFs(QString dirname)
 {
-  // for (size_t s = 0; s < getNumStudents(); s++)
-  for (size_t s = 0; s < 2; s++)
+  for (size_t s = 0; s < getNumStudents(); s++)
   {
     Student& student = db()->getStudent(s);
     GASSERT(!student.getStudentId().contains(" "), "Student ID [%s] should not contain spaces", qPrintable(student.getStudentId()));
@@ -44,6 +48,11 @@ void Global::generatePDFs(QString dirname)
 
     for (size_t p = 0; p < getNumPagesPerStudent(); p++)
     {
+      Global::getStatusLabel()->setText(QString("Generating PDF for student %1 of %2, page %3 of %4 (%5 percent)").
+                                        arg(s+1).arg(getNumStudents()).arg(p+1).arg(getNumPagesPerStudent()).arg(rint(0.5+100.0*s*p/(1.0*getNumPages()))));
+      // Flush out Qt events so that the UI update occurs inside this handler
+      Global::getQApplication()->processEvents();
+
       GDEBUG ("Printing page %zu of %zu for report [%s]", p+1, getNumPagesPerStudent(), qPrintable(pdfname));
       QPixmap pix = getPages()->getQPixmap(p);
       // Scale the pixmap to fit the printer
@@ -89,6 +98,7 @@ void Global::generatePDFs(QString dirname)
 
     painter.end();
   }
+  Global::getStatusLabel()->setText("");
 }
 
 void Global::save(QString filename)

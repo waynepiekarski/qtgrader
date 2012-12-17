@@ -17,6 +17,12 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->setupUi(this);
   Global::setMainWindow(this);
 
+  /* Set up a status bar in the main window */
+  QStatusBar *sb = statusBar();
+  QLabel *statusLabel = new QLabel ("");
+  sb->addWidget(statusLabel);
+  Global::setStatusLabel(statusLabel);
+
   /* Set up the GradeWindow and also fill the table with initial values from the database */
   Global::setGradeWindow(new GradeWindow);
 

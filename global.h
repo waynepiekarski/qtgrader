@@ -54,10 +54,18 @@ public:
   static MainWindow* getMainWindow() { GASSERT(_mw, "MainWindow is not set"); return _mw; }
   static MainWindow* mw() { return getMainWindow(); }
 
+  static void setStatusLabel(QLabel *in) { GASSERT(!_statusLabel, "Status label is already set"); _statusLabel = in; }
+  static QLabel* getStatusLabel() { GASSERT(_statusLabel, "Status label is not set"); return _statusLabel; }
+
+  static void setQApplication(QApplication *in) { GASSERT(!_qapp, "QApplication is already set"); _qapp = in; }
+  static QApplication* getQApplication() { GASSERT(_qapp, "QApplication is not set"); return _qapp; }
+
 private:
-  static MainWindow *_mw;
-  static GradeWindow *_gw;
-  static Database *_db;
-  static Pages *_pages;
+  static QApplication* _qapp;
+  static MainWindow* _mw;
+  static GradeWindow* _gw;
+  static QLabel* _statusLabel;
+  static Database* _db;
+  static Pages* _pages;
   static size_t _numPagesPerStudent;
 };

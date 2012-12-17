@@ -1,11 +1,13 @@
 #include "mainwindow.h"
 #include "gradewindow.h"
 #include "startup.h"
+#include "global.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
   QApplication a(argc, argv);
+  Global::setQApplication(&a);
 
   /* Query for what startup options we will use */
   StartupDialog sd;
