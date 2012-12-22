@@ -58,18 +58,20 @@ void Global::generatePDFs(QString dirname)
       Global::getQApplication()->processEvents();
 
       GDEBUG ("Printing page %zu of %zu for report [%s]", p+1, getNumPagesPerStudent(), qPrintable(pdfname));
-      QPixmap pix = getPages()->getQPixmap(p);
+      QPixmap pix = getPages()->getQPixmap(p+s*getNumPagesPerStudent());
       // Scale the pixmap to fit the printer
       pix = pix.scaled(printer.pageRect().width(), printer.pageRect().height(), Qt::KeepAspectRatio);
       // Draw the pixmap to the printer
       painter.drawPixmap (0, 0, pix);
 
       // Print out the student details at the top of the page
-      QString title = QString("Name: %1  ID: %2  Page: %3 of %4").arg(student.getStudentName()).arg(student.getStudentId()).arg(p+1).arg(getNumPagesPerStudent());
+      QString title = QString("Name: %1  ID: %2  Page: %3 of %4  Final Grade: %5 of %6").arg(student.getStudentName()).arg(student.getStudentId()).arg(p+1).arg(getNumPagesPerStudent()).arg(student.getTotal()).arg(db()->getTotalMaximum());
       painter.drawText(0, 0, title);
 
       // Build up a results string to print onto the page
       QString grades ("Results:");
+      size_t pageTotal = 0;
+      size_t pageMax = 0;
       for (size_t q = 0; q < getNumQuestions(); q++)
       {
         // See if the question is on this page
@@ -86,11 +88,16 @@ void Global::generatePDFs(QString dirname)
             GINFODIALOG(QString("Cannot render PDF for student [%1] because question %2 has no grade assigned").arg(student.getStudentName()).arg(q+1));
             return;
           }
+          pageTotal += student.getGrade(q);
+          pageMax += Global::db()->getQuestionMaximum(q);
           grades += QString("  Q%1 = %2/%3").arg(q+1).arg(student.getGrade(q)).arg(Global::db()->getQuestionMaximum(q));
           if (student.getFeedback(q) != "")
             grades += QString(" [%1]").arg(student.getFeedback(q));
         }
       }
+      grades += QString("  Totals = %1/%2").arg(pageTotal).arg(pageMax);
+      if (pageMax == 0)
+          grades = QString("No Results For This Page");
       // Wrap the text to fit a bounding box that is the width of the page, align to the bottom of the page
       painter.drawText(0, 30, printer.pageRect().width(), printer.pageRect().height()-30, Qt::TextWordWrap | Qt::AlignBottom, grades);
 
