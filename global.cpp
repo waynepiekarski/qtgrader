@@ -28,8 +28,15 @@ void Global::generatePDFs(QString dirname)
   for (size_t s = 0; s < getNumStudents(); s++)
   {
     Student& student = db()->getStudent(s);
-    GASSERT(!student.getStudentId().contains(" "), "Student ID [%s] should not contain spaces", qPrintable(student.getStudentId()));
-    QString pdfname (dirname + "/report-" + student.getStudentId() + ".pdf");
+    // Use the student name to form the file name for the repot
+    QString clean = student.getStudentName();
+    // Convert all non alpha/num chars into an underscore
+    for (QString::iterator i = clean.begin(); i != clean.end(); i++)
+    {
+      if (!i->isLetterOrNumber())
+        *i = '_';
+    }
+    QString pdfname (dirname + "/report-" + clean + ".pdf");
     GDEBUG ("Generating PDF [%s] for student [%s]", qPrintable(pdfname), qPrintable(student.getStudentId()));
 
     QPrinter printer (QPrinter::HighResolution);
