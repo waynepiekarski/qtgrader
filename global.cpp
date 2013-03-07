@@ -36,6 +36,11 @@ void Global::generatePDFs(QString dirname)
       if (!i->isLetterOrNumber())
         *i = '_';
     }
+    if (clean.length() == 0)
+    {
+      GINFODIALOG(QString("Cannot render PDF because student %1 does not have a name assigned").arg(s+1));
+      return;
+    }
     QString pdfname (dirname + "/report-" + clean + ".pdf");
     GDEBUG ("Generating PDF [%s] for student [%s]", qPrintable(pdfname), qPrintable(student.getStudentId()));
 
