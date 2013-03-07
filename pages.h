@@ -56,12 +56,13 @@ private:
     QDir pdfs (path, "*.pdf");
     pdfs.setFilter(QDir::Files);
     QFileInfoList list = pdfs.entryInfoList();
-    if (list.size() == 0)
-      GEXITDIALOG(QString("No PDF or JPG files found in scan directory [%1]").arg(qPrintable(path)));
-    GASSERT(list.size() > 0, "Size %d is invalid", list.size());
+    size_t found_pdfs = 0;
     for (int i = 0; i < list.size(); i++)
     {
       QString pdfname = list.at(i).absoluteFilePath();
+      if (pdfname.contains("report-"))
+        GEXITDIALOG(QString("Found generated PDF file %1 but there are no JPG images, and this should not be possible").arg(pdfname));
+      found_pdfs++;
       QString jpegprefix = pdfname;
       jpegprefix.replace(".pdf", "");
       GASSERT(jpegprefix.size()+4 == pdfname.size(), "Was not able to replace .pdf in file name [%s]", qPrintable(pdfname));
@@ -76,6 +77,8 @@ private:
       if (!pdfimages.waitForFinished())
         GEXITDIALOG(QString("An error %1 occurred running command [%2], make sure you have pdfimages installed in your PATH").arg(pdfimages.errorString()).arg(cmd));
     }
+    if (found_pdfs == 0)
+      GEXITDIALOG(QString("No PDF or JPG files found in scan directory [%1]").arg(qPrintable(path)));
   }
 
 private:
