@@ -3,14 +3,17 @@
 #include <stdio.h>
 #include <QMessageBox>
 
-#ifdef NDEBUG
+// Leave error checking turned on permanently
+#define QTGRADER_DEBUG
+
+#ifndef QTGRADER_DEBUG
 #define GDEBUG(fmt, ...)
 #else
 #define GDEBUG(fmt, ...) fprintf (stderr, "DEBUG %s:%d - " fmt "\n", __FILE__, __LINE__, ## __VA_ARGS__)
 #endif
 #define GFATAL(fmt, ...) fprintf (stderr, "FATAL %s:%d - " fmt "\n", __FILE__, __LINE__, ## __VA_ARGS__), fflush(stderr), GEXIT(1)
 
-#ifdef NDEBUG
+#ifndef QTGRADER_DEBUG
 #define GASSERT(cond, fmt, ...)
 #else
 #define __GASSERT_STR(cond) #cond
