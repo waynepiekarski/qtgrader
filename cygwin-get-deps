@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "This script requires the following packages to be installed"
+echo "poppler xpdf pdftk jpeg"
+echo
+echo "Also, if you get errors with pdfinfo, you should do the following:"
+echo "cygcheck pdfinfo"
+echo
+echo "If you see missing libraries, you will need to install them, the dependencies"
+echo "seem to be broken"

@@ -1,0 +1,27 @@
+Set up scanner with the following settings:
+
+PDF
+Medium Quality
+300 DPI
+Black and White
+Printed Picture
+Darkness set to maximum right
+Background removal at default
+
+Each unique exam type should be processed separate from other batches
+
+Cut off top left corner with guillotine
+
+Break up papers into sets of students so they fit into the scanner feeder
+
+Scan rotated 180 so that the chopped corner is facing away from the scanner
+
+After batch is done, flip over and scan with chopped corner away again
+
+Repeat for each set of papers.
+
+You will end up with a set of PDFs:
+
+Scan1-SideA Scan1-SideB Scan2-SideA Scan2-SideB É etc
+
+The merging tool will handle the merging and rotation to generate a set of images in consecutive order.

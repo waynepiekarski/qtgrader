@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# The user must supply a directory name to operate on
+if [ "$1" == "" ]; then
+  echo "Script requires a directory containing suitably named PDF files"
+  exit 1
+fi
+cd $1
+
+# Clean up the output files before starting
+rm -f out-*.jpg fixed-*.jpg
+
+# The files should be named using a scheme that ensures they appear in the right
+# order. It is assumed that the pages flow consecutively from one file to the next.
+PDFS=`ls -1 *.pdf | sort | tr '\n' ' '`
+
+echo "Found PDFs = [$PDFS]"
+
+pdftk $PDFS cat output /tmp/combined.pdf
+PDFSPAGES=`pdfinfo /tmp/combined.pdf | grep Pages: | awk -F':' '{ print $2 }' | tr -d ' '`
+echo "Produced $PDFSPAGES pages"
+
+# Split the single PDF into separate JPEG images named fixed-*.jpg
+pdfimages -j /tmp/combined.pdf fixed
+
+JPEGPAGES=`ls -1 fixed-*.jpg | wc -l`
+echo "Produced $JPEGPAGES raw JPEG images"
+if [ $JPEGPAGES != $PDFSPAGES ]; then
+  echo "Number of JPEG images does not match PDF page count, file corruption problem?"
+  exit 1
+fi
+
+# Clean up the temporary files, leaving only the fixed up JPEG files
+rm /tmp/combined.pdf

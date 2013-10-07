@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# The user must supply a directory name to operate on
+if [ "$1" == "" ]; then
+  echo "Script requires a directory containing suitably named PDF files"
+  exit 1
+fi
+cd $1
+
+# Clean up the output files before starting
+rm -f out-*.jpg fixed-*.jpg
+
+# The files should be named using a scheme that ensures they appear in the right
+# order. You should use A or B in the filename to indicate if it is the front or
+# back side for the scan.
+# Takes a set of scans 1A 1B 2A 2B 3A 3C and combines them together like so:
+# 1. Take even PDF files and concatenate them
+# 2. Take odd PDF files, and concatenate them in reverse order
+# 3. Shuffle the pages together to convert double sided to single sided
+
+EVEN=`ls -1 *[Aa].pdf | sort | tr '\n' ' '`
+ODD=`ls -1 *[Bb].pdf | sort -r | tr '\n' ' '`
+
+echo "Found even page PDFs = [$EVEN]"
+echo "Found odd page PDFs  = [$ODD]"
+
+pdftk $EVEN cat output /tmp/even.pdf
+EVENPAGES=`pdfinfo /tmp/even.pdf | grep Pages: | awk -F':' '{ print $2 }' | tr -d ' '`
+echo "Produced $EVENPAGES even pages"
+
+pdftk $ODD cat output /tmp/odd.pdf
+ODDPAGES=`pdfinfo /tmp/odd.pdf | grep Pages: | awk -F':' '{ print $2 }' | tr -d ' '`
+echo "Produced $ODDPAGES odd pages"
+
+pdftk A=/tmp/even.pdf B=/tmp/odd.pdf shuffle A Bend-1 output /tmp/shuffle.pdf
+OUTPAGES=`pdfinfo /tmp/shuffle.pdf | grep Pages: | awk -F':' '{ print $2 }' | tr -d ' '`
+echo "Produced $OUTPAGES shuffled output pages"
+
+if [ $EVENPAGES != $ODDPAGES ]; then
+  echo "Odd pages does not match even pages, scanner problem?"
+  exit 1
+fi
+if [ $[EVENPAGES+ODDPAGES] != $OUTPAGES ]; then
+  echo "Odd+Even pages does not match output pages, scanner problem?"
+  exit 1
+fi
+
+# Split the single PDF into separate JPEG images named tmp-*.jpg
+pdfimages -j /tmp/shuffle.pdf out
+
+JPEGPAGES=`ls -1 out-*.jpg | wc -l`
+echo "Produced $JPEGPAGES raw JPEG images"
+if [ $JPEGPAGES != $OUTPAGES ]; then
+  echo "Number of JPEG images does not match previous page count, file corruption problem?"
+  exit 1
+fi
+
+for EVEN in `ls -1 out-[0-9][0-9][02468].jpg`; do
+  echo "Rotating even file $EVEN 90 degrees to the right"
+  jpegtran -rotate 90 -outfile fixed-$EVEN $EVEN
+done
+
+for ODD in `ls -1 out-[0-9][0-9][13579].jpg`; do
+  echo "Rotating odd file $ODD 90 degrees to the left"
+  jpegtran -rotate 270 -outfile fixed-$ODD $ODD
+done
+
+# Clean up the temporary files, leaving only the fixed up versions
+rm -f out-*.jpg
