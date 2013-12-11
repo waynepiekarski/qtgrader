@@ -1,0 +1,41 @@
+Welcome to "qtgrader"
+The interactive high speed grading assistant
+
+Developed by Wayne Piekarski
+wayne@tinmith.net http://tinmith.net/wayne
+
+Copyright (C) 2012-2013 Wayne Piekarski
+
+----------------------------------------------------------------------
+
+This is an interactive Qt application which I wrote to assist with grading
+student exams and assigments. There is a big push in academia for making
+students take multiple choice or single word exams, but these are not
+suitable for all fields. Sometimes, you need to use a traditional exam
+where the student is able to write text and draw diagrams, and a human
+needs to grade it. With a large number of exams, grading a huge stack of
+exams can be very tedious and time consuming.
+
+With qtgrader, this process is simplified and allows you to grade exams
+quickly and accurately. The first step is to feed all the papers through
+a scanner. You then load these images into the qtgrader tool, and enter
+in the number of questions, and which page each question appears on. You
+can then browse quickly through each page, and jump across students but
+viewing the same question. So you grade all of question 1, then all of
+question 2, etc. This allows the human to be consistent amongst all the
+students. Also, there are shortcut keys to assign grades and jump between
+pages. You can enter text feedback for each question as well. The tool
+ensures that all the grades fit within the guidelines, and calculates the
+totals. Once the process is finished, the tool exports a standard tab
+delimited .qtg file that can be easily loaded into any spreadsheet. You
+can also export PDFs for each student, so they can see the grade received
+for each question, and any feedback from the grader.
+
+The qtgrader tool is written in portable C++ using the Qt toolkit, and
+has been tested on Mac OS X, Linux, and Windows. It is licensed under the
+GPLv3 so that it can be shared with the community. I am hoping that others
+will find this software useful, and that it might be expanded to meet the
+needs of others. If you are interested in commercialising this tool under
+a different license, please contact the author Wayne Piekarski to discuss
+this. If you modify or distribute this code, you need to comply with the
+terms of the GPLv3, contained in the LICENSE file.

@@ -1,0 +1,28 @@
+The tool has been very stable and there are no known bugs at this time.
+
+Some features that I would like to see included are:
+
+- Integration with online teaching tools
+It would be nice to be able to upload the grades directly into online
+course systems without having to type them in manually. This would
+require documentation from the course system provider to be able to
+implement this.
+
+- Integration with email to students
+It would be nice to be able to automatically send the generated PDF files
+to the students, either via email, or via their online course system. This
+would require a list of email addresses for the students, or documentation
+from the course system provider to send the emails.
+
+- Integration with database system
+Currently all the scanned images and grades are stored in the local filesystem.
+It would be interesting to see everything stored in a central repository so
+that grading could be done by multiple humans at the same time.
+
+- More integrated scanning process
+Currently the scanning is done manually using the provided shell scripts. Having
+the scanning directly integrated into the application would help to streamline
+this process and make it a bit easier.
+
+Currently I am not doing further work on the tool at this time, but would be
+interested in getting feedback from others who find it useful.
